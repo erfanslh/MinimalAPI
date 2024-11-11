@@ -14,6 +14,7 @@ namespace MinimalAPIMoviez.Repositories
         Task<bool> Exist(int id);
         //If the Data exists then we use Update and it doesnt have any generic Type
         Task Update(Genre genre);
+        Task Delete(int id);
 
 
     }

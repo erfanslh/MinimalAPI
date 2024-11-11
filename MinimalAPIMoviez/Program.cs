@@ -94,6 +94,24 @@ internal class Program
             return Results.NoContent();
         });
         #endregion
+
+        #region Delete
+        //We do the same following commands as we did for Update
+        //***   "/genre/{id:int}"
+        app.MapDelete("/genre/{id:int}", async (IGenresRepository repository, int ID
+            , IOutputCacheStore cacheStore) =>
+        {
+            var existing = await repository.Exist(ID);
+            if (!existing)
+            {
+                return Results.NotFound();
+            }
+
+            await repository.Delete(ID);
+            await cacheStore.EvictByTagAsync("cache-genre", default);
+            return Results.NoContent();
+        });
+        #endregion
         // Middleware zone - End
         app.Run();
     }

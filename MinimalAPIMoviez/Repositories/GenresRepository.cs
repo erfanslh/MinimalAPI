@@ -19,6 +19,12 @@ namespace MinimalAPIMoviez.Repositories
             return genre.Id;
         }
 
+        public async Task Delete(int id)
+        {
+            await context.genres.Where(x => x.Id == id).ExecuteDeleteAsync();
+            //context.Remove(id);
+            //await context.SaveChangesAsync();
+        }
 
         public async Task<bool> Exist(int id)
         {
