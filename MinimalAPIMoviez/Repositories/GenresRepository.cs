@@ -21,17 +21,17 @@ namespace MinimalAPIMoviez.Repositories
 
         public async Task<List<Genre>> GetAll()
         {
-            return await context.genres.ToListAsync();
+            return await context.genres.OrderBy(g => g.Name).ToListAsync();
         }
 
-        public async Task<Genre?> GetByID(int id)
+
+
+        public async Task<Genre?> GetbyID(int id)
         {
             return await context.genres.FirstOrDefaultAsync(p => p.Id == id);
         }
     }
 }
-
-
 
 
 

@@ -1,5 +1,6 @@
 using FluentAssertions.Common;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MinimalAPIMoviez;
@@ -48,29 +49,47 @@ internal class Program
         app.UseOutputCache();
 
         //**
-        // ãØÇáÚå ÈÔå
-        app.MapPost("/genre", async (Genre genre, IGenresRepository repository) =>
+        //ãØÇáÚå ÈÔå
+        app.MapPost("/genre", async (Genre genre, IOutputCacheStore iCache, IGenresRepository repository) =>
         {
             var id = await repository.Create(genre);
+            await iCache.EvictByTagAsync("cache-genre", default);
             return Results.Created($"/genre/{id}", genre);
         });
-
-        //**
-
-
-
 
         app.MapGet("/genre", async (IGenresRepository repository) =>
         {
             return await repository.GetAll();
-        }).CacheOutput(x=> x.Expire(TimeSpan.FromSeconds(15)));
+        }).CacheOutput(x => x.Expire(TimeSpan.FromSeconds(15)).Tag("cache-genre"));
 
-        app.MapGet("/genre/{id:int}", async (int ID, IGenresRepository repository) =>
+
+
+        app.MapGet("/genre/{id:int}", async (IGenresRepository repository, int ID) =>
         {
-            return await repository.GetByID(ID);
+            var genreId = await repository.GetbyID(ID);
+            if (genreId == null)
+            {
+                return Results.NotFound();
+            }
+            return Results.Ok(genreId);
         });
-
         // Middleware zone - End
         app.Run();
     }
 }
+
+
+
+
+
+
+
+
+
+
+//**
+
+//app.MapGet("/genre/{id:int}", async (int ID, IGenresRepository repository) =>
+//{
+//    return await repository.GetByID(ID);
+//});

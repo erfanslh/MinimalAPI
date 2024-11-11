@@ -55,10 +55,8 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "MinimalAPIMoviez.Entities.Genre",
-        "MediaTypes": [
-          "application/json"
-        ],
+        "Type": "System.Void",
+        "MediaTypes": [],
         "StatusCode": 200
       }
     ]

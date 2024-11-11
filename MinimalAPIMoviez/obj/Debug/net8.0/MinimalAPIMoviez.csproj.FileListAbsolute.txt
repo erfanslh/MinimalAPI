@@ -141,3 +141,4 @@ C:\Users\scorp\source\repos\MinimalAPIMoviez\MinimalAPIMoviez\obj\Debug\net8.0\r
 C:\Users\scorp\source\repos\MinimalAPIMoviez\MinimalAPIMoviez\obj\Debug\net8.0\MinimalAPIMoviez.pdb
 C:\Users\scorp\source\repos\MinimalAPIMoviez\MinimalAPIMoviez\obj\Debug\net8.0\MinimalAPIMoviez.genruntimeconfig.cache
 C:\Users\scorp\source\repos\MinimalAPIMoviez\MinimalAPIMoviez\obj\Debug\net8.0\ref\MinimalAPIMoviez.dll
+C:\Users\scorp\source\repos\MinimalAPIMoviez\MinimalAPIMoviez\obj\Debug\net8.0\MinimalAPIMoviez.sourcelink.json
