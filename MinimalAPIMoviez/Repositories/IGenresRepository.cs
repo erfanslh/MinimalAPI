@@ -9,6 +9,12 @@ namespace MinimalAPIMoviez.Repositories
         Task<List<Genre>> GetAll();
         Task<Genre?> GetbyID(int id);
 
+        //Update
+        // we use exist Interface to find out, if the Data exists
+        Task<bool> Exist(int id);
+        //If the Data exists then we use Update and it doesnt have any generic Type
+        Task Update(Genre genre);
+
 
     }
 }

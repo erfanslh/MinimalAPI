@@ -48,8 +48,7 @@ internal class Program
         app.UseCors();
         app.UseOutputCache();
 
-        //**
-        //ãØÇáÚå ÈÔå
+        //Create
         app.MapPost("/genre", async (Genre genre, IOutputCacheStore iCache, IGenresRepository repository) =>
         {
             var id = await repository.Create(genre);
@@ -57,13 +56,14 @@ internal class Program
             return Results.Created($"/genre/{id}", genre);
         });
 
+        //Get All
         app.MapGet("/genre", async (IGenresRepository repository) =>
         {
             return await repository.GetAll();
         }).CacheOutput(x => x.Expire(TimeSpan.FromSeconds(15)).Tag("cache-genre"));
 
 
-
+        //Get an Entity
         app.MapGet("/genre/{id:int}", async (IGenresRepository repository, int ID) =>
         {
             var genreId = await repository.GetbyID(ID);
@@ -73,23 +73,30 @@ internal class Program
             }
             return Results.Ok(genreId);
         });
+
+        #region Update
+        //we use PUT for Update
+        app.MapPut("/genre/{id:int}", async (int ID,Genre genre, IGenresRepository repository
+            ,IOutputCacheStore cacheStore) =>
+        {
+            //*** here we should use "await" ==> cuz it has Async and we are working with DB
+            var Exists = await repository.Exist(ID);
+            if (!Exists)
+            {
+                return Results.NotFound();
+            }
+            await repository.Update(genre);
+            // we Use IOutputCacheStore to cleanup the Caches by creating an Object of it
+            // ("IOutputCacheStore cacheStore"), then we use the object to implement cleanup Cache
+            await cacheStore.EvictByTagAsync("cache-genre", default);
+            //cuz we dont return anything in Update so we use
+            //    "Results.NoContent()"
+            return Results.NoContent();
+        });
+        #endregion
         // Middleware zone - End
         app.Run();
     }
 }
 
 
-
-
-
-
-
-
-
-
-//**
-
-//app.MapGet("/genre/{id:int}", async (int ID, IGenresRepository repository) =>
-//{
-//    return await repository.GetByID(ID);
-//});

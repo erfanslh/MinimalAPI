@@ -19,16 +19,25 @@ namespace MinimalAPIMoviez.Repositories
             return genre.Id;
         }
 
+
+        public async Task<bool> Exist(int id)
+        {
+            return await context.genres.AnyAsync(g => g.Id == id);
+        }
+
         public async Task<List<Genre>> GetAll()
         {
             return await context.genres.OrderBy(g => g.Name).ToListAsync();
         }
-
-
-
         public async Task<Genre?> GetbyID(int id)
         {
             return await context.genres.FirstOrDefaultAsync(p => p.Id == id);
+        }
+
+        public async Task Update(Genre genre)
+        {
+            context.Update(genre);
+            await context.SaveChangesAsync();
         }
     }
 }
