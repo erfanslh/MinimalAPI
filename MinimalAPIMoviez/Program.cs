@@ -1,11 +1,13 @@
 using FluentAssertions.Common;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.OutputCaching;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using MinimalAPIMoviez;
 using MinimalAPIMoviez.Entities;
 using MinimalAPIMoviez.Repositories;
+using System.Collections.Generic;
 
 internal class Program
 {
@@ -14,7 +16,7 @@ internal class Program
         var builder = WebApplication.CreateBuilder(args);
 
         //Service Zone - Start
-        
+
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -47,43 +49,67 @@ internal class Program
 
         app.UseCors();
         app.UseOutputCache();
+        //defining MapGroup
+        var EndpointsGenre = app.MapGroup("/genre");
 
+        #region CRUD
         //Create
-        app.MapPost("/genre", async (Genre genre, IOutputCacheStore iCache, IGenresRepository repository) =>
-        {
-            var id = await repository.Create(genre);
-            await iCache.EvictByTagAsync("cache-genre", default);
-            return Results.Created($"/genre/{id}", genre);
-        });
-
+        EndpointsGenre.MapPost("/", Insert);
         //Get All
-        app.MapGet("/genre", async (IGenresRepository repository) =>
-        {
-            return await repository.GetAll();
-        }).CacheOutput(x => x.Expire(TimeSpan.FromSeconds(15)).Tag("cache-genre"));
-
-
+        EndpointsGenre.MapGet("/", GetAll).CacheOutput(x => x.Expire(TimeSpan.FromSeconds(15)).Tag("cache-genre"));
         //Get an Entity
-        app.MapGet("/genre/{id:int}", async (IGenresRepository repository, int ID) =>
+        EndpointsGenre.MapGet("/{id:int}", GetById);
+        //Edit
+        EndpointsGenre.MapPut("/{id:int}",Update);
+        //Delete
+        //***   "/genre (in MapGroup added)  /{id:int}"
+        EndpointsGenre.MapDelete("/{id:int}", Delete);
+        #endregion
+
+        // Middleware zone - End
+        app.Run();
+
+        #region Methods for Lambda
+        //We made all our CRUD process (Endpoints) more readable by groupping them into Methods
+        //*****
+        // In Methods all Results are converted to TypedResults due to better type safety and enhanced readability
+        //*****
+        static async Task<Ok<List<Genre>>> GetAll(IGenresRepository repository)
+        {
+            var allInList = await repository.GetAll();
+            return TypedResults.Ok(allInList);
+        }
+        //*****
+        //Get by ID
+        static async Task<Results<Ok<Genre>, NotFound>> GetById(IGenresRepository repository, int ID)
         {
             var genreId = await repository.GetbyID(ID);
             if (genreId == null)
             {
-                return Results.NotFound();
+                return TypedResults.NotFound();
             }
-            return Results.Ok(genreId);
-        });
+            return TypedResults.Ok(genreId); 
+        };
+        //*****
 
-        #region Update
-        //we use PUT for Update
-        app.MapPut("/genre/{id:int}", async (int ID,Genre genre, IGenresRepository repository
-            ,IOutputCacheStore cacheStore) =>
+        //Create
+        static async Task<Created<Genre>> Insert (Genre genre, IOutputCacheStore iCache, IGenresRepository repository)
+        {
+            var id = await repository.Create(genre);
+            await iCache.EvictByTagAsync("cache-genre", default);
+            return TypedResults.Created($"/genre/{id}", genre);
+        };
+        //******
+
+        //Update
+        static async Task<Results<NotFound,NoContent>> Update(int ID, Genre genre, IGenresRepository repository
+            , IOutputCacheStore cacheStore)
         {
             //*** here we should use "await" ==> cuz it has Async and we are working with DB
             var Exists = await repository.Exist(ID);
             if (!Exists)
             {
-                return Results.NotFound();
+                return TypedResults.NotFound();
             }
             await repository.Update(genre);
             // we Use IOutputCacheStore to cleanup the Caches by creating an Object of it
@@ -91,29 +117,23 @@ internal class Program
             await cacheStore.EvictByTagAsync("cache-genre", default);
             //cuz we dont return anything in Update so we use
             //    "Results.NoContent()"
-            return Results.NoContent();
-        });
-        #endregion
-
-        #region Delete
-        //We do the same following commands as we did for Update
-        //***   "/genre/{id:int}"
-        app.MapDelete("/genre/{id:int}", async (IGenresRepository repository, int ID
-            , IOutputCacheStore cacheStore) =>
+            return TypedResults.NoContent();
+        };
+        //Delete
+        static async Task<Results<NotFound,NoContent>> Delete(IGenresRepository repository, int ID
+            , IOutputCacheStore cacheStore)
         {
             var existing = await repository.Exist(ID);
             if (!existing)
             {
-                return Results.NotFound();
+                return TypedResults.NotFound();
             }
 
             await repository.Delete(ID);
             await cacheStore.EvictByTagAsync("cache-genre", default);
-            return Results.NoContent();
-        });
+            return TypedResults.NoContent();
+        };
         #endregion
-        // Middleware zone - End
-        app.Run();
     }
 }
 

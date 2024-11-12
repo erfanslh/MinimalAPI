@@ -1,8 +1,8 @@
 [
   {
-    "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003CMain\u003Eb__0_2",
-    "RelativePath": "genre",
+    "ContainingType": "Program",
+    "Method": "\u003CMain\u003Eg__Insert|0_5",
+    "RelativePath": "genre/",
     "HttpMethod": "POST",
     "IsController": false,
     "Order": 0,
@@ -15,16 +15,18 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 200
+        "Type": "MinimalAPIMoviez.Entities.Genre",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
       }
     ]
   },
   {
-    "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003CMain\u003Eb__0_3",
-    "RelativePath": "genre",
+    "ContainingType": "Program",
+    "Method": "\u003CMain\u003Eg__GetAll|0_3",
+    "RelativePath": "genre/",
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
@@ -40,8 +42,8 @@
     ]
   },
   {
-    "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003CMain\u003Eb__0_5",
+    "ContainingType": "Program",
+    "Method": "\u003CMain\u003Eg__GetById|0_4",
     "RelativePath": "genre/{id:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -55,15 +57,22 @@
     ],
     "ReturnTypes": [
       {
+        "Type": "MinimalAPIMoviez.Entities.Genre",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
         "Type": "System.Void",
         "MediaTypes": [],
-        "StatusCode": 200
+        "StatusCode": 404
       }
     ]
   },
   {
-    "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003CMain\u003Eb__0_6",
+    "ContainingType": "Program",
+    "Method": "\u003CMain\u003Eg__Update|0_6",
     "RelativePath": "genre/{id:int}",
     "HttpMethod": "PUT",
     "IsController": false,
@@ -84,13 +93,18 @@
       {
         "Type": "System.Void",
         "MediaTypes": [],
-        "StatusCode": 200
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
       }
     ]
   },
   {
-    "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003CMain\u003Eb__0_7",
+    "ContainingType": "Program",
+    "Method": "\u003CMain\u003Eg__Delete|0_7",
     "RelativePath": "genre/{id:int}",
     "HttpMethod": "DELETE",
     "IsController": false,
@@ -106,7 +120,12 @@
       {
         "Type": "System.Void",
         "MediaTypes": [],
-        "StatusCode": 200
+        "StatusCode": 404
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 204
       }
     ]
   }
