@@ -1,7 +1,7 @@
 [
   {
-    "ContainingType": "Program",
-    "Method": "\u003CMain\u003Eg__Insert|0_5",
+    "ContainingType": "MinimalAPIMoviez.EndPoints.GenresEndpoints",
+    "Method": "Insert",
     "RelativePath": "genre/",
     "HttpMethod": "POST",
     "IsController": false,
@@ -24,8 +24,8 @@
     ]
   },
   {
-    "ContainingType": "Program",
-    "Method": "\u003CMain\u003Eg__GetAll|0_3",
+    "ContainingType": "MinimalAPIMoviez.EndPoints.GenresEndpoints",
+    "Method": "GetAll",
     "RelativePath": "genre/",
     "HttpMethod": "GET",
     "IsController": false,
@@ -42,8 +42,8 @@
     ]
   },
   {
-    "ContainingType": "Program",
-    "Method": "\u003CMain\u003Eg__GetById|0_4",
+    "ContainingType": "MinimalAPIMoviez.EndPoints.GenresEndpoints",
+    "Method": "GetById",
     "RelativePath": "genre/{id:int}",
     "HttpMethod": "GET",
     "IsController": false,
@@ -71,8 +71,8 @@
     ]
   },
   {
-    "ContainingType": "Program",
-    "Method": "\u003CMain\u003Eg__Update|0_6",
+    "ContainingType": "MinimalAPIMoviez.EndPoints.GenresEndpoints",
+    "Method": "Update",
     "RelativePath": "genre/{id:int}",
     "HttpMethod": "PUT",
     "IsController": false,
@@ -103,8 +103,8 @@
     ]
   },
   {
-    "ContainingType": "Program",
-    "Method": "\u003CMain\u003Eg__Delete|0_7",
+    "ContainingType": "MinimalAPIMoviez.EndPoints.GenresEndpoints",
+    "Method": "Delete",
     "RelativePath": "genre/{id:int}",
     "HttpMethod": "DELETE",
     "IsController": false,
