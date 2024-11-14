@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.OutputCaching;
 using MinimalAPIMoviez.Entities;
 using MinimalAPIMoviez.Repositories;
+using MinimalAPIMoviez.DTOs;
 
 namespace MinimalAPIMoviez.EndPoints
 {
@@ -32,26 +33,33 @@ namespace MinimalAPIMoviez.EndPoints
         //*****
         // In Methods all Results are converted to TypedResults due to better type safety and enhanced readability
         //*****
-        static async Task<Ok<List<Genre>>> GetAll(IGenresRepository repository)
+        static async Task<Ok<List<GenreDTO>>> GetAll(IGenresRepository repository)
         {
-            var allInList = await repository.GetAll();
-            return TypedResults.Ok(allInList);
+            var genre = await repository.GetAll();
+            var genreDTO = genre.Select(g => new GenreDTO { Id = g.Id, Name = g.Name }).ToList();
+            return TypedResults.Ok(genreDTO);
         }
         //*****
         //Get by ID
-        static async Task<Results<Ok<Genre>, NotFound>> GetById(IGenresRepository repository, int ID)
+        static async Task<Results<Ok<GenreDTO>, NotFound>> GetById(IGenresRepository repository, int ID)
         {
-            var genreId = await repository.GetbyID(ID);
-            if (genreId == null)
+
+            var genre = await repository.GetbyID(ID);
+            if (genre == null)
             {
                 return TypedResults.NotFound();
             }
-            return TypedResults.Ok(genreId);
+            var genreDTO = new GenreDTO
+            {
+                Id = genre.Id,
+                Name = genre.Name
+            };
+            return TypedResults.Ok(genreDTO);
         }
         //*****
 
         //Create
-        static async Task<Created<Genre>> Insert(Genre genre, IOutputCacheStore iCache, IGenresRepository repository)
+        static async Task<Created<CreateGenreDTO>> Insert(Genre genre, IOutputCacheStore iCache, IGenresRepository repository)
         {
             var id = await repository.Create(genre);
             await iCache.EvictByTagAsync("cache-genre", default);

@@ -8,14 +8,14 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "genre",
-        "Type": "MinimalAPIMoviez.Entities.Genre",
+        "Name": "addGenre",
+        "Type": "MinimalAPIMoviez.DTOs.AddGenreDTO",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "MinimalAPIMoviez.Entities.Genre",
+        "Type": "MinimalAPIMoviez.DTOs.GetGenreDTO",
         "MediaTypes": [
           "application/json"
         ],
@@ -33,7 +33,7 @@
     "Parameters": [],
     "ReturnTypes": [
       {
-        "Type": "System.Collections.Generic.List\u00601[[MinimalAPIMoviez.Entities.Genre, MinimalAPIMoviez, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "Type": "System.Collections.Generic.List\u00601[[MinimalAPIMoviez.DTOs.GetGenreDTO, MinimalAPIMoviez, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
         "MediaTypes": [
           "application/json"
         ],
@@ -57,7 +57,7 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "MinimalAPIMoviez.Entities.Genre",
+        "Type": "MinimalAPIMoviez.DTOs.GetGenreDTO",
         "MediaTypes": [
           "application/json"
         ],
@@ -84,8 +84,8 @@
         "IsRequired": true
       },
       {
-        "Name": "genre",
-        "Type": "MinimalAPIMoviez.Entities.Genre",
+        "Name": "addGenre",
+        "Type": "MinimalAPIMoviez.DTOs.AddGenreDTO",
         "IsRequired": true
       }
     ],
