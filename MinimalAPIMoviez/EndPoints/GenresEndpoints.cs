@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.OutputCaching;
 using MinimalAPIMoviez.Entities;
 using MinimalAPIMoviez.Repositories;
 using MinimalAPIMoviez.DTOs;
+using System.Security.Cryptography.Xml;
+using AutoMapper;
 
 namespace MinimalAPIMoviez.EndPoints
 {
@@ -33,15 +35,18 @@ namespace MinimalAPIMoviez.EndPoints
         //*****
         // In Methods all Results are converted to TypedResults due to better type safety and enhanced readability
         //*****
-        static async Task<Ok<List<GenreDTO>>> GetAll(IGenresRepository repository)
+        static async Task<Ok<List<GenreDTO>>> GetAll(IGenresRepository repository, IMapper mapper)
         {
             var genre = await repository.GetAll();
-            var genreDTO = genre.Select(g => new GenreDTO { Id = g.Id, Name = g.Name }).ToList();
+            //Using Select() in Linq - GenreDTO include => {empty id and empty name}
+            // and we insert "genre" information into empty GenreDTO
+            var genreDTO = mapper.Map<List<GenreDTO>>(genre);
             return TypedResults.Ok(genreDTO);
         }
         //*****
         //Get by ID
-        static async Task<Results<Ok<GenreDTO>, NotFound>> GetById(IGenresRepository repository, int ID)
+        static async Task<Results<Ok<GenreDTO>, NotFound>> GetById(IGenresRepository repository, int ID
+            , IMapper mapper)
         {
 
             var genre = await repository.GetbyID(ID);
@@ -49,27 +54,33 @@ namespace MinimalAPIMoviez.EndPoints
             {
                 return TypedResults.NotFound();
             }
-            var genreDTO = new GenreDTO
-            {
-                Id = genre.Id,
-                Name = genre.Name
-            };
+            var genreDTO = mapper.Map<GenreDTO>(genre);
             return TypedResults.Ok(genreDTO);
         }
         //*****
 
         //Create
-        static async Task<Created<CreateGenreDTO>> Insert(Genre genre, IOutputCacheStore iCache, IGenresRepository repository)
+        static async Task<Created<GenreDTO>> Insert(CreateGenreDTO createGenreDTO,
+            IOutputCacheStore iCache,
+            IGenresRepository repository,
+            IMapper mapper)
         {
+            var genre = mapper.Map<Genre>(createGenreDTO);
             var id = await repository.Create(genre);
             await iCache.EvictByTagAsync("cache-genre", default);
-            return TypedResults.Created($"/genre/{id}", genre);
+
+            var genreDTO = mapper.Map<GenreDTO>(genre);
+
+            return TypedResults.Created($"/genre/{id}", genreDTO);
         }
         //******
 
         //Update
-        static async Task<Results<NotFound, NoContent>> Update(int ID, Genre genre, IGenresRepository repository
-            , IOutputCacheStore cacheStore)
+        static async Task<Results<NotFound, NoContent>> Update(int ID,
+            CreateGenreDTO createGenreDTO,
+            IGenresRepository repository,
+            IOutputCacheStore cacheStore,
+            IMapper mapper)
         {
             //*** here we should use "await" ==> cuz it has Async and we are working with DB
             var Exists = await repository.Exist(ID);
@@ -77,6 +88,10 @@ namespace MinimalAPIMoviez.EndPoints
             {
                 return TypedResults.NotFound();
             }
+            var genre = mapper.Map<Genre>(createGenreDTO);
+            //We need ID to update, which is not included in our DTO "createGenreDTO"
+            genre.Id = ID; 
+          //*****************
             await repository.Update(genre);
             // we Use IOutputCacheStore to cleanup the Caches by creating an Object of it
             // ("IOutputCacheStore cacheStore"), then we use the object to implement cleanup Cache

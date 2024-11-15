@@ -38,7 +38,7 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddScoped<IGenresRepository, GenresRepository>();
-
+        builder.Services.AddAutoMapper(typeof(Program));
         //Service Zone - End
 
         var app = builder.Build();

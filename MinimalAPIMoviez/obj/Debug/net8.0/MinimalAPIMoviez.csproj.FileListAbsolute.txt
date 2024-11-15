@@ -142,3 +142,4 @@ C:\Users\scorp\source\repos\MinimalAPIMoviez\MinimalAPIMoviez\obj\Debug\net8.0\M
 C:\Users\scorp\source\repos\MinimalAPIMoviez\MinimalAPIMoviez\obj\Debug\net8.0\MinimalAPIMoviez.genruntimeconfig.cache
 C:\Users\scorp\source\repos\MinimalAPIMoviez\MinimalAPIMoviez\obj\Debug\net8.0\ref\MinimalAPIMoviez.dll
 C:\Users\scorp\source\repos\MinimalAPIMoviez\MinimalAPIMoviez\obj\Debug\net8.0\MinimalAPIMoviez.sourcelink.json
+C:\Users\scorp\source\repos\MinimalAPIMoviez\MinimalAPIMoviez\bin\Debug\net8.0\AutoMapper.dll
