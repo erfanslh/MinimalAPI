@@ -23,5 +23,6 @@ namespace MinimalAPIMoviez
         //}
 
         public DbSet<Genre> genres { get; set; }
+        public DbSet<Actor> actor { get; set; }
     }
 }
