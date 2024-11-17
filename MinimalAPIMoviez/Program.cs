@@ -8,6 +8,7 @@ using MinimalAPIMoviez;
 using MinimalAPIMoviez.EndPoints;
 using MinimalAPIMoviez.Entities;
 using MinimalAPIMoviez.Repositories;
+using MinimalAPIMoviez.Services;
 using System.Collections.Generic;
 
 internal class Program
@@ -38,6 +39,8 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
         builder.Services.AddScoped<IGenresRepository, GenresRepository>();
+        builder.Services.AddScoped<IActorRepository, ActorRepository>();
+        builder.Services.AddTransient<IFileStorage, AzureStorage>();
         builder.Services.AddAutoMapper(typeof(Program));
         //Service Zone - End
 

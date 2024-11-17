@@ -12,15 +12,17 @@ namespace MinimalAPIMoviez
         {
 
         }
-        //  ******************************************
-        //  * Yeki dg az ravesh haye Data Annotation *
-        //  ******************************************
-        //protected override void OnModelCreating(ModelBuilder modelBuilder)
-        //{
-        //    base.OnModelCreating(modelBuilder);
+          //******************************************
+          //* Yeki dg az ravesh haye Data Annotation*
+          //******************************************
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
 
-        //    modelBuilder.Entity<Genre>().Property(p=> p.Name).HasMaxLength (50);
-        //}
+            modelBuilder.Entity<Actor>().Property(p => p.Name).HasMaxLength(150);
+            modelBuilder.Entity<Actor>().Property(p => p.Imagename).IsUnicode();
+
+        }
 
         public DbSet<Genre> genres { get; set; }
         public DbSet<Actor> actor { get; set; }

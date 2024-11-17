@@ -19,7 +19,7 @@ namespace MinimalAPIMoviez.Repositories
         }
         public async Task<Actor?> GetByID(int id)
         {
-            return await context.actor.FirstOrDefaultAsync(a => a.Id == id);
+            return await context.actor.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
         }
         public async Task<int> Create(Actor actor)
         {

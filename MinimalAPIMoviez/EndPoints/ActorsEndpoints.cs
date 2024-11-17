@@ -14,7 +14,7 @@ namespace MinimalAPIMoviez.EndPoints
     public static class ActorsEndpoints
     {
 
-        private readonly static string defaultActorName = "Nophoto";
+        private readonly static string container = "actor";
         public static RouteGroupBuilder MapActors(this RouteGroupBuilder routeGroup)
         { 
             routeGroup.MapPost("/", Create).DisableAntiforgery();
@@ -22,23 +22,22 @@ namespace MinimalAPIMoviez.EndPoints
         }
         //We use [FormForm] cause we have file in our CreateActorDTO entity
         // Task<Type-of-Task <The template we want to return>>
-        static async Task<Created<ActorDTO>> Create([FromForm] CreateActorDTO actorDTO,
+        static async Task<Created<ActorDTO>> Create([FromForm] CreateActorDTO createActorDTO,
             IMapper mapper,
             IActorRepository repository,
             IOutputCacheStore outputCache,
             IFileStorage fileStorage)
         {
-            var mapActor = mapper.Map<Actor>(actorDTO);
-            var id = await repository.Create(mapActor);
-            if (fileStorage != null)
+            var actor = mapper.Map<Actor>(createActorDTO);
+            if (createActorDTO.Imagename is not null)
             {
-                var url = await fileStorage.Store(defaultActorName, actorDTO.Imagename);
-                mapActor.Imagename = url;
+                var url = await fileStorage.Store(container, createActorDTO.Imagename);
+                actor.Imagename = url;
             }
+            var id = await repository.Create(actor);
             await outputCache.EvictByTagAsync("actors-get", default);
-
-            var actor = mapper.Map<ActorDTO>(id);
-            return TypedResults.Created($"/actor/{id}", actor);
+            var actorDTO = mapper.Map<ActorDTO>(actor);
+            return TypedResults.Created($"/actor/{id}", actorDTO);
 
             
             

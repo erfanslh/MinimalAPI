@@ -34,6 +34,7 @@ namespace MinimalAPIMoviez.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Imagename")
+                        .IsUnicode(true)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")

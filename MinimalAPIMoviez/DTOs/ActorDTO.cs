@@ -5,7 +5,7 @@
     {
         public int Id { get; set; }
         public string Name { get; set; } = null!;
-        public DateTime BirthdayDate { get; set; }
+        public DateTime BirthDate { get; set; }
         //we dont use IFormfile here, because we will return the URL of Image
         public string? Imagename { get; set; }
     }
