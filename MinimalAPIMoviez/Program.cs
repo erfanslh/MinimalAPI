@@ -52,6 +52,7 @@ internal class Program
         app.UseOutputCache();
         //defining MapGroup
         app.MapGroup("/genre").MapGenres();
+        app.MapGroup("/actor").MapActors();
 
 
 

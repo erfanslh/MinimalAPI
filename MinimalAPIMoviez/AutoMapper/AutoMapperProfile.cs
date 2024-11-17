@@ -12,6 +12,11 @@ namespace MinimalAPIMoviez.AutoMapper
             // Otherwise it doesnt work anymore with Database
             CreateMap<Genre, GenreDTO>();
             CreateMap<CreateGenreDTO, Genre>();
+
+            CreateMap<Actor, ActorDTO>();
+            CreateMap<CreateActorDTO, Actor>()
+            //Imagename in CreateActorDTO is "IFormFile", which should be ignored during Mapping
+            .ForMember(m => m.Imagename, option => option.Ignore());
         }
     }
 }
