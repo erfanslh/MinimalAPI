@@ -11,6 +11,7 @@
           "AutoMapper": "13.0.1",
           "Azure.Storage.Blobs": "12.23.0",
           "FluentAssertions": "6.12.1",
+          "Hl7.Fhir.Support": "4.3.0",
           "Microsoft.EntityFrameworkCore": "8.0.10",
           "Microsoft.EntityFrameworkCore.Design": "8.0.10",
           "Microsoft.EntityFrameworkCore.SqlServer": "8.0.10",
@@ -101,6 +102,17 @@
           "lib/net6.0/FluentAssertions.dll": {
             "assemblyVersion": "6.12.1.0",
             "fileVersion": "6.12.1.0"
+          }
+        }
+      },
+      "Hl7.Fhir.Support/4.3.0": {
+        "dependencies": {
+          "System.Reflection.Emit.Lightweight": "4.7.0"
+        },
+        "runtime": {
+          "lib/net6.0/Hl7.Fhir.Support.dll": {
+            "assemblyVersion": "4.3.0.0",
+            "fileVersion": "4.3.0.0"
           }
         }
       },
@@ -905,6 +917,7 @@
         }
       },
       "System.Numerics.Vectors/4.5.0": {},
+      "System.Reflection.Emit.Lightweight/4.7.0": {},
       "System.Reflection.Metadata/6.0.1": {
         "dependencies": {
           "System.Collections.Immutable": "6.0.0"
@@ -1064,6 +1077,13 @@
       "sha512": "sha512-hciWwryyLw3eonfqhFpOMTXyM1/auJChYslEBA+iGJyuBs5O3t/kA8YaeH4iRo/2Fe3ElSYL86C0miivtZ0f3g==",
       "path": "fluentassertions/6.12.1",
       "hashPath": "fluentassertions.6.12.1.nupkg.sha512"
+    },
+    "Hl7.Fhir.Support/4.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-rJx7g5rH0hngu/9C7JjWm/tb0TDkJa5xYYgI7A9USKg4JAGWE2aQIR/MSDaEh9U1wrfynyC1bwZ0B9Krjc0vLQ==",
+      "path": "hl7.fhir.support/4.3.0",
+      "hashPath": "hl7.fhir.support.4.3.0.nupkg.sha512"
     },
     "Humanizer.Core/2.14.1": {
       "type": "package",
@@ -1526,6 +1546,13 @@
       "sha512": "sha512-QQTlPTl06J/iiDbJCiepZ4H//BVraReU4O4EoRw1U02H5TLUIT7xn3GnDp9AXPSlJUDyFs4uWjWafNX6WrAojQ==",
       "path": "system.numerics.vectors/4.5.0",
       "hashPath": "system.numerics.vectors.4.5.0.nupkg.sha512"
+    },
+    "System.Reflection.Emit.Lightweight/4.7.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-a4OLB4IITxAXJeV74MDx49Oq2+PsF6Sml54XAFv+2RyWwtDBcabzoxiiJRhdhx+gaohLh4hEGCLQyBozXoQPqA==",
+      "path": "system.reflection.emit.lightweight/4.7.0",
+      "hashPath": "system.reflection.emit.lightweight.4.7.0.nupkg.sha512"
     },
     "System.Reflection.Metadata/6.0.1": {
       "type": "package",

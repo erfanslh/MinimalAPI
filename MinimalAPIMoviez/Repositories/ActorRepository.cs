@@ -21,6 +21,10 @@ namespace MinimalAPIMoviez.Repositories
         {
             return await context.actor.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
         }
+        public async Task<List<Actor>> GetByName(string name)
+        {
+            return await context.actor.Where(a=> a.Name.Contains(name)).OrderBy(a=> a.Name).ToListAsync();
+        }
         public async Task<int> Create(Actor actor)
         {
             context.Add(actor);

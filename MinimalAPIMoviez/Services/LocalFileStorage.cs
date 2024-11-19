@@ -6,8 +6,11 @@ using System;
 
 namespace MinimalAPIMoviez.Services
 {
+    //IWebHostEnvironment is wwwroot folder
+    //HttpContextAccessor is used to get (Schema+Host)
     public class LocalFileStorage(HttpContextAccessor httpContextAccessor,
         IWebHostEnvironment environment) : IFileStorage
+
     {
         public Task Delete(string? route, string container)
         {
@@ -24,7 +27,7 @@ namespace MinimalAPIMoviez.Services
             }
             return Task.CompletedTask;
         }  
-            public async Task<string> Store(string container, IFormFile file)
+        public async Task<string> Store(string container, IFormFile file)
         {
             var getExtension = Path.GetExtension(file.FileName);
             string fileName = $"{Guid.NewGuid()}{getExtension}";
@@ -37,6 +40,7 @@ namespace MinimalAPIMoviez.Services
                 Directory.CreateDirectory(folder);
             }
             // Combine the directory path with the unique file name to get the full file path.
+            // Path is exactly like this : Path.Combine(environment.WebRootPath, container, fileName)
             string route = Path.Combine(folder, fileName);
 
             // Temporarily store the uploaded file's data using MemoryStream

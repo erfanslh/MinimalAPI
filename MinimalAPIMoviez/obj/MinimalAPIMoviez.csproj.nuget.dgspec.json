@@ -58,6 +58,10 @@
               "target": "Package",
               "version": "[6.12.1, )"
             },
+            "Hl7.Fhir.Support": {
+              "target": "Package",
+              "version": "[4.3.0, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[8.0.10, )"

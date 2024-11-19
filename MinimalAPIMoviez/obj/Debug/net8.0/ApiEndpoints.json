@@ -1,6 +1,24 @@
 [
   {
     "ContainingType": "MinimalAPIMoviez.EndPoints.ActorsEndpoints",
+    "Method": "GetAll",
+    "RelativePath": "actor/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[MinimalAPIMoviez.DTOs.ActorDTO, MinimalAPIMoviez, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MinimalAPIMoviez.EndPoints.ActorsEndpoints",
     "Method": "Create",
     "RelativePath": "actor/",
     "HttpMethod": "POST",
@@ -20,6 +38,59 @@
           "application/json"
         ],
         "StatusCode": 201
+      }
+    ]
+  },
+  {
+    "ContainingType": "MinimalAPIMoviez.EndPoints.ActorsEndpoints",
+    "Method": "GetById",
+    "RelativePath": "actor/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MinimalAPIMoviez.DTOs.ActorDTO",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ]
+  },
+  {
+    "ContainingType": "MinimalAPIMoviez.EndPoints.ActorsEndpoints",
+    "Method": "GetByName",
+    "RelativePath": "actor/getByName/{name}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "name",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[MinimalAPIMoviez.DTOs.ActorDTO, MinimalAPIMoviez, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
       }
     ]
   },
