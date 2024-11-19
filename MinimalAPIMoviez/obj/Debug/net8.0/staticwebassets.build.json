@@ -1,11 +1,19 @@
 {
   "Version": 1,
-  "Hash": "JBq1+/L7AlxbTxOEZDAoWJsb7bjKKJL0CpjHnLUj41I=",
+  "Hash": "LNuiD/W345hilGhtizzamBrIamZBGPRLOpaVkjPBNwQ=",
   "Source": "MinimalAPIMoviez",
   "BasePath": "_content/MinimalAPIMoviez",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "MinimalAPIMoviez\\wwwroot",
+      "Source": "MinimalAPIMoviez",
+      "ContentRoot": "C:\\Users\\scorp\\source\\repos\\MinimalAPIMoviez\\MinimalAPIMoviez\\wwwroot\\",
+      "BasePath": "_content/MinimalAPIMoviez",
+      "Pattern": "**"
+    }
+  ],
   "Assets": []
 }
