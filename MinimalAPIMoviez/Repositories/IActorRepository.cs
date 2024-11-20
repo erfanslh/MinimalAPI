@@ -1,10 +1,11 @@
-﻿using MinimalAPIMoviez.Entities;
+﻿using MinimalAPIMoviez.DTOs;
+using MinimalAPIMoviez.Entities;
 
 namespace MinimalAPIMoviez.Repositories
 {
     public interface IActorRepository
     {
-        Task<List<Actor>> GetAll();
+        Task<List<Actor>> GetAll(PaginationDTO pagination);
         Task<Actor?> GetByID(int id);
         Task<int> Create(Actor actor);
         Task<bool> Exists(int id);

@@ -40,17 +40,17 @@ namespace MinimalAPIMoviez.Services
                 Directory.CreateDirectory(folder);
             }
             // Combine the directory path with the unique file name to get the full file path.
-            // Path is exactly like this : Path.Combine(environment.WebRootPath, container, fileName)
             string route = Path.Combine(folder, fileName);
 
             // Temporarily store the uploaded file's data using MemoryStream
             using (var ms = new MemoryStream())
             {
-                // Copy the uploaded file into the memory stream.
+                // Copy the uploaded file into the (var ms).
                 await file.CopyToAsync(ms);
-                // Convert the memory stream's content into an array.
+                // Convert the ms's content into an array.
                 var content = ms.ToArray();
-                // Write the byte array to the target file path on the server.
+                // Write the byte array (Paste) to the target file path on the server.
+                // Path is exactly like this : Path.Combine(environment.WebRootPath, container, fileName)
                 await File.WriteAllBytesAsync(route, content);
             };
             // Get Schema + Host and combine them inot a URL

@@ -24,9 +24,11 @@ namespace MinimalAPIMoviez.EndPoints
             routeGroup.MapPost("/", Create).DisableAntiforgery();
             return routeGroup;
         }
-        static async Task<Ok<List<ActorDTO>>> GetAll(IActorRepository repository, IMapper mapper)
+        static async Task<Ok<List<ActorDTO>>> GetAll(IActorRepository repository, IMapper mapper,
+                int page =1, int recordsperpage = 10)
         {
-            var allActors = await repository.GetAll();
+            var pagination = new PaginationDTO { Page = page,RecordsPerPage = recordsperpage };
+            var allActors = await repository.GetAll(pagination);
             var map = mapper.Map<List<ActorDTO>>(allActors);
             return TypedResults.Ok(map);
         }

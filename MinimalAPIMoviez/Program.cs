@@ -42,6 +42,8 @@ internal class Program
         builder.Services.AddScoped<IActorRepository, ActorRepository>();
         builder.Services.AddTransient<IFileStorage, AzureStorage>();
         builder.Services.AddAutoMapper(typeof(Program));
+        //Add this service to use HttpContextAccessor
+        builder.Services.AddHttpContextAccessor();
         //Service Zone - End
 
         var app = builder.Build();
