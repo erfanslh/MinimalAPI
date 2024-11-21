@@ -38,8 +38,11 @@ internal class Program
         builder.Services.AddOutputCache();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+        //Scope-Service for Repositories and Interfaces
         builder.Services.AddScoped<IGenresRepository, GenresRepository>();
         builder.Services.AddScoped<IActorRepository, ActorRepository>();
+        builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+
         builder.Services.AddTransient<IFileStorage, AzureStorage>();
         builder.Services.AddAutoMapper(typeof(Program));
         //Add this service to use HttpContextAccessor
@@ -58,6 +61,7 @@ internal class Program
         //defining MapGroup
         app.MapGroup("/genre").MapGenres();
         app.MapGroup("/actor").MapActors();
+        app.MapGroup("/movie").MapMovies();
 
 
 

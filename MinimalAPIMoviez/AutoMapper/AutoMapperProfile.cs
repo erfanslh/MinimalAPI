@@ -17,6 +17,10 @@ namespace MinimalAPIMoviez.AutoMapper
             CreateMap<CreateActorDTO, Actor>()
             //Imagename in CreateActorDTO is "IFormFile", which should be ignored during Mapping
             .ForMember(m => m.Imagename, option => option.Ignore());
+
+            CreateMap<Movie, MovieDTO>();
+            CreateMap<CreateMovieDTO, Movie>()
+            .ForMember(m => m.CoverImage, option => option.Ignore());
         }
     }
 }

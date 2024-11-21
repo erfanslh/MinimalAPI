@@ -12,17 +12,17 @@ namespace MinimalAPIMoviez.Repositories
 
         public async Task<List<Actor>>  GetAll(PaginationDTO pagination)
         {
-            var queryable = context.actor.AsQueryable();
+            var queryable = context.actors.AsQueryable();
             await httpContextAccessor.HttpContext!.InsertPaginationInResponseHeader(queryable);
             return await queryable.OrderBy(a => a.Name).Pagination(pagination).ToListAsync();
         }
         public async Task<Actor?> GetByID(int id)
         {
-            return await context.actor.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
+            return await context.actors.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
         }
         public async Task<List<Actor>> GetByName(string name)
         {
-            return await context.actor.Where(a=> a.Name.Contains(name)).OrderBy(a=> a.Name).ToListAsync();
+            return await context.actors.Where(a=> a.Name.Contains(name)).OrderBy(a=> a.Name).ToListAsync();
         }
         public async Task<int> Create(Actor actor)
         {
@@ -32,7 +32,7 @@ namespace MinimalAPIMoviez.Repositories
         }
         public async Task<bool> Exists(int id)
         {
-            return await context.actor.AnyAsync(a=> a.Id == id);
+            return await context.actors.AnyAsync(a=> a.Id == id);
         }
         public async Task Update(Actor actor)
         {
@@ -42,7 +42,7 @@ namespace MinimalAPIMoviez.Repositories
 
         public async Task Delete (int id)
         {
-             await context.actor.Where(a => a.Id == id).ExecuteDeleteAsync();
+             await context.actors.Where(a => a.Id == id).ExecuteDeleteAsync();
         }
     }
 }

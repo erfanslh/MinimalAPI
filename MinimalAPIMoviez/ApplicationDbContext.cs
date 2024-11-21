@@ -22,9 +22,13 @@ namespace MinimalAPIMoviez
             modelBuilder.Entity<Actor>().Property(p => p.Name).HasMaxLength(150);
             modelBuilder.Entity<Actor>().Property(p => p.Imagename).IsUnicode();
 
+            modelBuilder.Entity<Movie>().Property(p => p.Title).HasMaxLength(150);
+            modelBuilder.Entity<Movie>().Property(p => p.CoverImage).IsUnicode();
+
         }
 
         public DbSet<Genre> genres { get; set; }
-        public DbSet<Actor> actor { get; set; }
+        public DbSet<Actor> actors { get; set; }
+        public DbSet<Movie> movies { get; set; }
     }
 }
