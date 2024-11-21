@@ -22,8 +22,12 @@ namespace MinimalAPIMoviez.EndPoints
             routeGroup.MapGet("/{id:int}", GetById);
             routeGroup.MapGet("getByName/{name}", GetByName);
             routeGroup.MapPost("/", Create).DisableAntiforgery();
+            routeGroup.MapPut("/{id:int}", Update).DisableAntiforgery();
+            routeGroup.MapDelete("/{id:int}", Delete);
             return routeGroup;
         }
+        #region Get all Actors
+
         static async Task<Ok<List<ActorDTO>>> GetAll(IActorRepository repository, IMapper mapper,
                 int page =1, int recordsperpage = 10)
         {
@@ -32,6 +36,9 @@ namespace MinimalAPIMoviez.EndPoints
             var map = mapper.Map<List<ActorDTO>>(allActors);
             return TypedResults.Ok(map);
         }
+        #endregion
+
+        #region Get Actors by ID
         static async Task<Results<Ok<ActorDTO>, NotFound>> GetById(int id, IActorRepository repository, IMapper mapper)
         {
             var findActor = await repository.GetByID(id);
@@ -42,12 +49,18 @@ namespace MinimalAPIMoviez.EndPoints
             }
             return TypedResults.NotFound();
         }
+        #endregion
+
+        #region Filter Actors by Name
         static async Task<Ok<List<ActorDTO>>> GetByName(string name, IActorRepository repository, IMapper mapper)
         {
             var actorName = await repository.GetByName(name);
             var dto = mapper.Map<List<ActorDTO>>(actorName);
             return TypedResults.Ok(dto);
         }
+        #endregion
+
+        #region Create Actor
         //We use [FormForm] cause we have file in our CreateActorDTO entity
         // Task<Type-of-Task <The template we want to return>>
         static async Task<Created<ActorDTO>> Create([FromForm] CreateActorDTO createActorDTO,
@@ -67,8 +80,57 @@ namespace MinimalAPIMoviez.EndPoints
             var actorDTO = mapper.Map<ActorDTO>(actor);
             return TypedResults.Created($"/actor/{id}", actorDTO);
 
-            
-            
         }
+        #endregion
+
+        #region Update an Actor
+        static async Task<Results<NotFound,NoContent>> Update(int id, IActorRepository repository, [FromForm]CreateActorDTO createActorDTO,
+            IMapper mapper, IOutputCacheStore cacheStore, IFileStorage fileStorage)
+        {
+            var findActor = await repository.GetByID(id);
+            if (findActor is null)
+            {
+                return TypedResults.NotFound();
+            }
+
+            var editActor = mapper.Map<Actor>(createActorDTO);
+            editActor.Id = id;
+            editActor.Imagename = findActor.Imagename;
+
+            if (createActorDTO.Imagename is not null)
+            {
+                var url = await fileStorage.Update(editActor.Imagename, container, createActorDTO.Imagename);
+                editActor.Imagename = url;
+            }
+
+            await repository.Update(editActor);
+            await cacheStore.EvictByTagAsync("actors-get", default);
+            return TypedResults.NoContent();
+
+        }
+        #endregion
+
+        #region Delete an Actor
+
+        static async Task<Results<NotFound, NoContent>> Delete(int id, IActorRepository repository,
+                IOutputCacheStore cacheStore, IFileStorage fileStorage
+           )
+        {
+            var findActor = await repository.GetByID(id);
+            if (findActor is null)
+            {
+                return TypedResults.NotFound();
+            }
+
+            await repository.Delete(id);
+
+            await fileStorage.Delete(findActor.Imagename, container);
+
+            await cacheStore.EvictByTagAsync("actors-get", default);
+            return TypedResults.NoContent();
+        }
+
+        #endregion
+
     }
 }
