@@ -7,5 +7,6 @@
         public bool InCinema { get; set; }
         public DateTime ReleaseDate { get; set; }
         public string? CoverImage { get; set; }
+        public List<Comment> commentsfk { get; set; } = new List<Comment>();
     }
 }

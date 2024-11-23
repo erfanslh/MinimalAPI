@@ -9,6 +9,7 @@ namespace MinimalAPIMoviez.Repositories
         Task Delete(int id);
         Task<List<Movie>> GetAll(PaginationDTO pagination);
         Task<Movie?> GetByID(int id);
+        Task<bool> Exists(int id);
         Task Update(Movie movie);
     }
 }

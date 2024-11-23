@@ -375,5 +375,39 @@
         "StatusCode": 404
       }
     ]
+  },
+  {
+    "ContainingType": "MinimalAPIMoviez.EndPoints.CommentEndpoints",
+    "Method": "Create",
+    "RelativePath": "movie/{movieId:int}/comments/",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "movieId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "createCommentDTO",
+        "Type": "MinimalAPIMoviez.DTOs.CreateCommentDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MinimalAPIMoviez.DTOs.CommentDTO",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 201
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ]
   }
 ]

@@ -42,6 +42,7 @@ internal class Program
         builder.Services.AddScoped<IGenresRepository, GenresRepository>();
         builder.Services.AddScoped<IActorRepository, ActorRepository>();
         builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+        builder.Services.AddScoped<ICommentRepository, CommentRepository>();
 
         builder.Services.AddTransient<IFileStorage, AzureStorage>();
         builder.Services.AddAutoMapper(typeof(Program));
@@ -63,6 +64,8 @@ internal class Program
         app.MapGroup("/actor").MapActors();
         app.MapGroup("/movie").MapMovies();
 
+        // We get Comments on a Movie so first we need the ID of the Movie then get into comments
+        app.MapGroup("/movie/{movieId:int}/comments").MapComment();
 
 
         // Middleware zone - End

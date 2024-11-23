@@ -21,6 +21,9 @@ namespace MinimalAPIMoviez.AutoMapper
             CreateMap<Movie, MovieDTO>();
             CreateMap<CreateMovieDTO, Movie>()
             .ForMember(m => m.CoverImage, option => option.Ignore());
+
+            CreateMap<Comment, CommentDTO>();
+            CreateMap<CreateCommentDTO, Comment>();
         }
     }
 }
