@@ -409,5 +409,61 @@
         "StatusCode": 404
       }
     ]
+  },
+  {
+    "ContainingType": "MinimalAPIMoviez.EndPoints.CommentEndpoints",
+    "Method": "GetAll",
+    "RelativePath": "movie/{movieId:int}/comments/",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "movieId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MinimalAPIMoviez.EndPoints.CommentEndpoints",
+    "Method": "GetById",
+    "RelativePath": "movie/{movieId:int}/comments/{id:int}",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "movieId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MinimalAPIMoviez.DTOs.CommentDTO",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 404
+      }
+    ]
   }
 ]
