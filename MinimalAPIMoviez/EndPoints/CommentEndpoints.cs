@@ -15,6 +15,8 @@ namespace MinimalAPIMoviez.EndPoints
             routeGroup.MapGet("/", GetAll)
                     .CacheOutput(c=> c.Expire(TimeSpan.FromSeconds(60)).Tag("comment-get"));
             routeGroup.MapGet("/{id:int}", GetById);
+            routeGroup.MapPut("/{id:int}", Update);
+            routeGroup.MapDelete("/{id:int}", Delete);
             return routeGroup;
         }
 
@@ -44,6 +46,45 @@ namespace MinimalAPIMoviez.EndPoints
             }
             var commentDTO = mapper.Map<CommentDTO>(comment);
             return TypedResults.Ok(commentDTO);
+        }
+
+        static async Task<IResult> Update(int movieID, int id, CreateCommentDTO createComment,
+            ICommentRepository commentRepository, IOutputCacheStore cache,
+            IMovieRepository movieRepository, IMapper mapper)
+        {
+            if (!await movieRepository.Exists(movieID))
+            {
+                return TypedResults.NotFound();
+            }
+            if (!await commentRepository.Exists(id))
+            {
+                return TypedResults.NotFound();
+            }
+            var comment = mapper.Map<Comment>(createComment);
+            comment.Id = id;
+            comment.MovieId = movieID;
+
+            await commentRepository.Update(comment);
+            await cache.EvictByTagAsync("comment-get", default);
+            return TypedResults.NoContent();
+        }
+
+        static async Task<IResult> Delete (int movieID, int id, ICommentRepository commentRepository,
+            IMovieRepository movieRepository, IOutputCacheStore cacheStore)
+        {
+            if (!await commentRepository.Exists(id))
+            {
+                return TypedResults.NotFound();
+            }
+            if (!await movieRepository.Exists(movieID))
+            {
+                return TypedResults.NotFound();
+            }
+
+            await commentRepository.Delete(id);
+            await cacheStore.EvictByTagAsync("comment-get", default);
+            return TypedResults.NoContent();
+
         }
         static async Task< Results<Created<CommentDTO>,NotFound> > Create(int movieID, CreateCommentDTO createCommentDTO,
                     IMapper mapper, IOutputCacheStore cache, 
