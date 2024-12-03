@@ -465,5 +465,64 @@
         "StatusCode": 404
       }
     ]
+  },
+  {
+    "ContainingType": "MinimalAPIMoviez.EndPoints.CommentEndpoints",
+    "Method": "Update",
+    "RelativePath": "movie/{movieId:int}/comments/{id:int}",
+    "HttpMethod": "PUT",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "movieId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "createComment",
+        "Type": "MinimalAPIMoviez.DTOs.CreateCommentDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MinimalAPIMoviez.EndPoints.CommentEndpoints",
+    "Method": "Delete",
+    "RelativePath": "movie/{movieId:int}/comments/{id:int}",
+    "HttpMethod": "DELETE",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "movieId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      },
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
+      }
+    ]
   }
 ]

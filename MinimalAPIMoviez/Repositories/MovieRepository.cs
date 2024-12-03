@@ -16,7 +16,9 @@ namespace MinimalAPIMoviez.Repositories
 
         public async Task<Movie?> GetByID(int id)
         {
-            return await context.movies.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
+            return await context.movies
+                .Include(m=> m.commentsfk)
+                .AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
 
         }
         public async Task<bool> Exists(int id)
