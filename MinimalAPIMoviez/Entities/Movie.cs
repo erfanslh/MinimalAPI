@@ -8,5 +8,6 @@
         public DateTime ReleaseDate { get; set; }
         public string? CoverImage { get; set; }
         public List<Comment> commentsfk { get; set; } = new List<Comment>();
+        public List<GenreMovie> GenresMovies { get; set; } = new List<GenreMovie>();
     }
 }

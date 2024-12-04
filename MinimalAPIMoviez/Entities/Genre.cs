@@ -9,6 +9,7 @@ namespace MinimalAPIMoviez.Entities
 
         [Display(Name = "Genre"), StringLength(150)]
         public string? Name { get; set; }
+        public List<GenreMovie> GenresMovies { get; set; } = new List<GenreMovie>();
 
     }
 }
