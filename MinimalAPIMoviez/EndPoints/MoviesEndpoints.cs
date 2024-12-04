@@ -15,6 +15,7 @@ namespace MinimalAPIMoviez.EndPoints
         public static RouteGroupBuilder MapMovies(this RouteGroupBuilder routeGroup)
         {
             routeGroup.MapPost("/", Create).DisableAntiforgery();
+            routeGroup.MapPost("/{id:int}/assignGenre",AssignGenres).DisableAntiforgery();
             routeGroup.MapGet("/", GetAllMovies)
                                         .CacheOutput(c => c.Expire(TimeSpan.FromMinutes(1)).Tag("movie-get"));
             routeGroup.MapGet("/{id:int}", GetByID);
@@ -54,6 +55,29 @@ namespace MinimalAPIMoviez.EndPoints
             }
             var map = mapper.Map<MovieDTO>(movie);
             return TypedResults.Ok(map);
+        }
+        public static async Task<IResult> AssignGenres(int id, List<int>genresID,
+            IMovieRepository movieRepository, IGenresRepository genresRepository)
+        {
+            if (!await movieRepository.Exists(id))
+            {
+                return TypedResults.NotFound();
+            }
+            var existingGenre = new List<int>();
+
+            if (genresID.Count != 0)
+            {
+                existingGenre = await genresRepository.Exists(genresID);
+            }
+            //return the Except
+            if (genresID.Count != existingGenre.Count)
+            {
+                var nonExistingGenre = genresID.Except(existingGenre);
+                var nonExistingGenreCSV = string.Join(", ", nonExistingGenre);
+                return TypedResults.BadRequest($"The genre with id:{nonExistingGenreCSV} did not found");
+            }
+            await movieRepository.Assign(id, existingGenre);
+            return TypedResults.NoContent();
         }
     }
 }

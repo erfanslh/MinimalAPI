@@ -45,6 +45,11 @@ namespace MinimalAPIMoviez.Repositories
             context.Update(genre);
             await context.SaveChangesAsync();
         }
+
+        public async Task<List<int>> Exists(List<int> ids)
+        {
+            return await context.genres.Where(g=> ids.Contains(g.Id)).Select(g=> g.Id).ToListAsync();
+        }
     }
 }
 
