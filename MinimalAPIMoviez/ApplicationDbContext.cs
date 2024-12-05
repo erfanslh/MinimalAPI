@@ -25,7 +25,8 @@ namespace MinimalAPIMoviez
             modelBuilder.Entity<Movie>().Property(p => p.Title).HasMaxLength(150);
             modelBuilder.Entity<Movie>().Property(p => p.CoverImage).IsUnicode();
 
-            modelBuilder.Entity<GenreMovie>().HasKey(gm=> new {gm.MovieId, gm.GenreId});
+            modelBuilder.Entity<GenreMovie>().HasKey(gm => new { gm.MovieId, gm.GenreId });
+            modelBuilder.Entity<ActorMovie>().HasKey(am => new { am.MovieId, am.ActorId });
         }
 
         public DbSet<Genre> genres { get; set; }
@@ -33,5 +34,6 @@ namespace MinimalAPIMoviez
         public DbSet<Movie> movies { get; set; }
         public DbSet<Comment> comments { get; set; }
         public DbSet<GenreMovie> GenresMovies { get; set; }
+        public DbSet<ActorMovie> ActorMovies { get; set; }
     }
 }

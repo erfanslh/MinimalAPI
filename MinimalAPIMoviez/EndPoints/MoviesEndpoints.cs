@@ -69,7 +69,7 @@ namespace MinimalAPIMoviez.EndPoints
             {
                 existingGenre = await genresRepository.Exists(genresID);
             }
-            //return the Except
+            
             if (genresID.Count != existingGenre.Count)
             {
                 var nonExistingGenre = genresID.Except(existingGenre);

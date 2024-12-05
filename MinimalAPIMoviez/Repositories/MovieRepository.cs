@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using MinimalAPIMoviez.DTOs;
 using MinimalAPIMoviez.Entities;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MinimalAPIMoviez.Repositories
 {
@@ -55,6 +56,23 @@ namespace MinimalAPIMoviez.Repositories
             var genresMovie = ids.Select(genreid => new GenreMovie { GenreId = genreid });
             // add-keep-delete
             movie.GenresMovies = mapper.Map(genresMovie, movie.GenresMovies);
+            await context.SaveChangesAsync();
+        }
+        public async Task Assign(int id, List<ActorMovie> actors)
+        {
+            for (int i = 1; i <= actors.Count; i++)
+            {
+                actors[i - 1].Order = i;
+            }
+            var movie =  await context.movies.Include(m=> m.ActorsMovies)
+                .FirstOrDefaultAsync(m=> m.Id == id);
+            if (movie == null)
+            {
+                throw new ArgumentException($"The movie with id {id} did not found...");
+            }
+
+            // update the existing collection of ActorsMovies using AutoMapper
+            movie.ActorsMovies = mapper.Map(actors, movie.ActorsMovies);
             await context.SaveChangesAsync();
         }
     }
