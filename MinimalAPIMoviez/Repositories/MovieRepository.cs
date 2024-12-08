@@ -21,6 +21,12 @@ namespace MinimalAPIMoviez.Repositories
         {
             return await context.movies
                 .Include(m=> m.commentsfk)
+
+                .Include(m=> m.GenresMovies)
+                    .ThenInclude(m=> m.Genres)
+
+                .Include(m=> m.ActorsMovies.OrderBy(am=> am.Actor))
+                    .ThenInclude(m=> m.Actor)
                 .AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
 
         }

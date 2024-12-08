@@ -1,4 +1,6 @@
-﻿namespace MinimalAPIMoviez.DTOs
+﻿using MinimalAPIMoviez.Entities;
+
+namespace MinimalAPIMoviez.DTOs
 {
     public class MovieDTO
     {
@@ -8,5 +10,8 @@
         public DateTime ReleaseDate { get; set; }
         public string? CoverImage { get; set; }
         public List<CommentDTO> commentsfk { get; set; } = new List<CommentDTO>();
+
+        public List<ActorMovieDTO> actorMovies { get; set; } = new List<ActorMovieDTO>();
+        public List<GenreDTO> genres { get; set; } = new List<GenreDTO>();
     }
 }
