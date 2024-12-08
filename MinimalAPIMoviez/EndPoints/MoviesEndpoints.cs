@@ -16,6 +16,7 @@ namespace MinimalAPIMoviez.EndPoints
         {
             routeGroup.MapPost("/", Create).DisableAntiforgery();
             routeGroup.MapPost("/{id:int}/assignGenre",AssignGenres).DisableAntiforgery();
+            routeGroup.MapPost("/{id:int}/assignActor", AssignActor);
             routeGroup.MapGet("/", GetAllMovies)
                                         .CacheOutput(c => c.Expire(TimeSpan.FromMinutes(1)).Tag("movie-get"));
             routeGroup.MapGet("/{id:int}", GetByID);
@@ -79,5 +80,36 @@ namespace MinimalAPIMoviez.EndPoints
             await movieRepository.Assign(id, existingGenre);
             return TypedResults.NoContent();
         }
+        public static async Task<IResult> AssignActor(int id, List<AssignActorMovieDTO> assignActorMovies,
+            IActorRepository actorRepository, IMovieRepository movieRepository, IMapper mapper)
+        {
+            if  (!await actorRepository.Exists(id))
+            {
+                return TypedResults.NotFound();
+            }
+
+            var existingActorsIds = new List<int>();
+            // Extract the actor IDs from the list of AssignActorMovieDTO objects
+            var actorsIds = assignActorMovies.Select(a=> a.ActorId).ToList();
+
+            if (assignActorMovies.Count !=0 )
+            {
+                existingActorsIds = await actorRepository.Exists(actorsIds);
+            }
+
+         // if the number of existing actor IDs does not match the number of provided actor IDs,
+            if (existingActorsIds.Count != assignActorMovies.Count )
+            {
+                // Find the IDs of actors that do not exist
+                var nonExistingActors = actorsIds.Except(existingActorsIds);
+                var nonExistingActorsCSV = string.Join (", ", nonExistingActors);
+                return TypedResults.BadRequest($"Actor with the ID:{nonExistingActorsCSV} did not found");
+            }
+            var actor = mapper.Map<List<ActorMovie>>(assignActorMovies);
+            await movieRepository.Assign(id, actor);
+            return TypedResults.NoContent();
+        }
+
+
     }
 }

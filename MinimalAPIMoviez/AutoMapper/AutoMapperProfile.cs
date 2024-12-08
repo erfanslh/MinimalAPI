@@ -24,6 +24,9 @@ namespace MinimalAPIMoviez.AutoMapper
 
             CreateMap<Comment, CommentDTO>();
             CreateMap<CreateCommentDTO, Comment>();
+
+            CreateMap<ActorMovie, AssignActorMovieDTO>();
+            CreateMap<AssignActorMovieDTO, ActorMovie>();
         }
     }
 }
