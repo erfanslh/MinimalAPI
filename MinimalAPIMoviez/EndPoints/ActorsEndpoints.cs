@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
@@ -63,12 +64,17 @@ namespace MinimalAPIMoviez.EndPoints
         #region Create Actor
         //We use [FormForm] cause we have file in our CreateActorDTO entity
         // Task<Type-of-Task <The template we want to return>>
-        static async Task<Created<ActorDTO>> Create([FromForm] CreateActorDTO createActorDTO,
+        static async Task<Results<Created<ActorDTO>,ValidationProblem>> Create([FromForm] CreateActorDTO createActorDTO,
             IMapper mapper,
             IActorRepository repository,
             IOutputCacheStore outputCache,
-            IFileStorage fileStorage)
+            IFileStorage fileStorage, IValidator<CreateActorDTO> validator)
         {
+            var validationResult = await validator.ValidateAsync(createActorDTO);
+            if (!validationResult.IsValid)
+            {
+                return TypedResults.ValidationProblem(validationResult.ToDictionary());
+            }
             var actor = mapper.Map<Actor>(createActorDTO);
             if (createActorDTO.Imagename is not null)
             {
