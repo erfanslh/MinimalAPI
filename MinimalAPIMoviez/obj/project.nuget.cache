@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "17dtfNVJZUk=",
+  "dgSpecHash": "dfzErAWPZb4=",
   "success": true,
-  "projectFilePath": "C:\\Users\\scorp\\source\\repos\\MinimalAPIMoviez\\MinimalAPIMoviez\\MinimalAPIMoviez.csproj",
+  "projectFilePath": "C:\\Users\\scorp\\source\\repos\\MiniAPI\\MinimalAPIMoviez\\MinimalAPIMoviez.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\scorp\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\scorp\\.nuget\\packages\\azure.core\\1.44.1\\azure.core.1.44.1.nupkg.sha512",
@@ -10,6 +10,8 @@
     "C:\\Users\\scorp\\.nuget\\packages\\azure.storage.blobs\\12.23.0\\azure.storage.blobs.12.23.0.nupkg.sha512",
     "C:\\Users\\scorp\\.nuget\\packages\\azure.storage.common\\12.22.0\\azure.storage.common.12.22.0.nupkg.sha512",
     "C:\\Users\\scorp\\.nuget\\packages\\fluentassertions\\6.12.1\\fluentassertions.6.12.1.nupkg.sha512",
+    "C:\\Users\\scorp\\.nuget\\packages\\fluentvalidation\\11.11.0\\fluentvalidation.11.11.0.nupkg.sha512",
+    "C:\\Users\\scorp\\.nuget\\packages\\fluentvalidation.dependencyinjectionextensions\\11.11.0\\fluentvalidation.dependencyinjectionextensions.11.11.0.nupkg.sha512",
     "C:\\Users\\scorp\\.nuget\\packages\\hl7.fhir.support\\4.3.0\\hl7.fhir.support.4.3.0.nupkg.sha512",
     "C:\\Users\\scorp\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
     "C:\\Users\\scorp\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\6.0.0\\microsoft.bcl.asyncinterfaces.6.0.0.nupkg.sha512",

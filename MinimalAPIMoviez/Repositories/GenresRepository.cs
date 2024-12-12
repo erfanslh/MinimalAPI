@@ -30,6 +30,12 @@ namespace MinimalAPIMoviez.Repositories
         {
             return await context.genres.AnyAsync(g => g.Id == id);
         }
+        public async Task<bool> Exists(int id, string name)
+        {
+            //this is used for avoiding to record 2 genres with the same Name
+            // id is always 0
+            return await context.genres.AnyAsync(g => g.Id != id && g.Name == name);
+        }
 
         public async Task<List<Genre>> GetAll()
         {

@@ -10,6 +10,7 @@ using MinimalAPIMoviez.Entities;
 using MinimalAPIMoviez.Repositories;
 using MinimalAPIMoviez.Services;
 using System.Collections.Generic;
+using FluentValidation;
 
 internal class Program
 {
@@ -48,6 +49,8 @@ internal class Program
         builder.Services.AddAutoMapper(typeof(Program));
         //Add this service to use HttpContextAccessor
         builder.Services.AddHttpContextAccessor();
+
+        builder.Services.AddValidatorsFromAssemblyContaining<Program>();
         //Service Zone - End
 
         var app = builder.Build();

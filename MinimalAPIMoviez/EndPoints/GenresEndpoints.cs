@@ -7,6 +7,7 @@ using MinimalAPIMoviez.Repositories;
 using MinimalAPIMoviez.DTOs;
 using System.Security.Cryptography.Xml;
 using AutoMapper;
+using FluentValidation;
 
 namespace MinimalAPIMoviez.EndPoints
 {
@@ -60,11 +61,16 @@ namespace MinimalAPIMoviez.EndPoints
         //*****
 
         //Create
-        static async Task<Created<GenreDTO>> Insert(CreateGenreDTO createGenreDTO,
+        static async Task<Results<Created<GenreDTO>, ValidationProblem>> Insert(CreateGenreDTO createGenreDTO,
             IOutputCacheStore iCache,
             IGenresRepository repository,
-            IMapper mapper)
+            IMapper mapper, IValidator<CreateGenreDTO> validator)
         {
+            var validationsResult = await validator.ValidateAsync(createGenreDTO);
+            if (!validationsResult.IsValid)
+            {
+                return TypedResults.ValidationProblem(validationsResult.ToDictionary());
+            }
             var genre = mapper.Map<Genre>(createGenreDTO);
             var id = await repository.Create(genre);
             await iCache.EvictByTagAsync("cache-genre", default);
@@ -76,12 +82,17 @@ namespace MinimalAPIMoviez.EndPoints
         //******
 
         //Update
-        static async Task<Results<NotFound, NoContent>> Update(int ID,
+        static async Task<Results<NotFound, NoContent, ValidationProblem>> Update(int ID,
             CreateGenreDTO createGenreDTO,
             IGenresRepository repository,
             IOutputCacheStore cacheStore,
-            IMapper mapper)
+            IMapper mapper, IValidator<CreateGenreDTO> validator)
         {
+            var validationResult = await validator.ValidateAsync(createGenreDTO);
+            if (!validationResult.IsValid)
+            {
+                return TypedResults.ValidationProblem(validationResult.ToDictionary());
+            }
             //*** here we should use "await" ==> cuz it has Async and we are working with DB
             var Exists = await repository.Exist(ID);
             if (!Exists)

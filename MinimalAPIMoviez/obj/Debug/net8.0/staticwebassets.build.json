@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "LNuiD/W345hilGhtizzamBrIamZBGPRLOpaVkjPBNwQ=",
+  "Hash": "DQzKm4vObuTedl2EgfHbABEI9x9Px5P56btG2+5A8B4=",
   "Source": "MinimalAPIMoviez",
   "BasePath": "_content/MinimalAPIMoviez",
   "Mode": "Default",
@@ -10,7 +10,7 @@
     {
       "Name": "MinimalAPIMoviez\\wwwroot",
       "Source": "MinimalAPIMoviez",
-      "ContentRoot": "C:\\Users\\scorp\\source\\repos\\MinimalAPIMoviez\\MinimalAPIMoviez\\wwwroot\\",
+      "ContentRoot": "C:\\Users\\scorp\\source\\repos\\MiniAPI\\MinimalAPIMoviez\\wwwroot\\",
       "BasePath": "_content/MinimalAPIMoviez",
       "Pattern": "**"
     }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\scorp\\source\\repos\\MinimalAPIMoviez\\MinimalAPIMoviez\\MinimalAPIMoviez.csproj": {}
+    "C:\\Users\\scorp\\source\\repos\\MiniAPI\\MinimalAPIMoviez\\MinimalAPIMoviez.csproj": {}
   },
   "projects": {
-    "C:\\Users\\scorp\\source\\repos\\MinimalAPIMoviez\\MinimalAPIMoviez\\MinimalAPIMoviez.csproj": {
+    "C:\\Users\\scorp\\source\\repos\\MiniAPI\\MinimalAPIMoviez\\MinimalAPIMoviez.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\scorp\\source\\repos\\MinimalAPIMoviez\\MinimalAPIMoviez\\MinimalAPIMoviez.csproj",
+        "projectUniqueName": "C:\\Users\\scorp\\source\\repos\\MiniAPI\\MinimalAPIMoviez\\MinimalAPIMoviez.csproj",
         "projectName": "MinimalAPIMoviez",
-        "projectPath": "C:\\Users\\scorp\\source\\repos\\MinimalAPIMoviez\\MinimalAPIMoviez\\MinimalAPIMoviez.csproj",
+        "projectPath": "C:\\Users\\scorp\\source\\repos\\MiniAPI\\MinimalAPIMoviez\\MinimalAPIMoviez.csproj",
         "packagesPath": "C:\\Users\\scorp\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\scorp\\source\\repos\\MinimalAPIMoviez\\MinimalAPIMoviez\\obj\\",
+        "outputPath": "C:\\Users\\scorp\\source\\repos\\MiniAPI\\MinimalAPIMoviez\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\scorp\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -57,6 +57,10 @@
             "FluentAssertions": {
               "target": "Package",
               "version": "[6.12.1, )"
+            },
+            "FluentValidation.DependencyInjectionExtensions": {
+              "target": "Package",
+              "version": "[11.11.0, )"
             },
             "Hl7.Fhir.Support": {
               "target": "Package",
