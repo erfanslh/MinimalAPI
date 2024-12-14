@@ -11,6 +11,7 @@ using MinimalAPIMoviez.Repositories;
 using MinimalAPIMoviez.Services;
 using System.Collections.Generic;
 using FluentValidation;
+using Microsoft.AspNetCore.Diagnostics;
 
 internal class Program
 {
@@ -44,6 +45,7 @@ internal class Program
         builder.Services.AddScoped<IActorRepository, ActorRepository>();
         builder.Services.AddScoped<IMovieRepository, MovieRepository>();
         builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+        builder.Services.AddScoped<IErrorRepository, ErrorRepository>();
 
         builder.Services.AddTransient<IFileStorage, AzureStorage>();
         builder.Services.AddAutoMapper(typeof(Program));
@@ -51,6 +53,9 @@ internal class Program
         builder.Services.AddHttpContextAccessor();
 
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+        builder.Services.AddProblemDetails();
+
         //Service Zone - End
 
         var app = builder.Build();
@@ -59,9 +64,34 @@ internal class Program
 
         app.UseSwagger();
         app.UseSwaggerUI();
+        // for Handling error
+        app.UseExceptionHandler(exceptionHandlerApp => exceptionHandlerApp.Run(async context =>
+        {
+            var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
+            var exception = exceptionHandlerFeature?.Error!;
+            var error = new Error();
+            error.Date = DateTime.UtcNow;
+            error.ErrorMessage = exception.Message;
+            error.StackTrace = exception.StackTrace;
+
+            var repository = context.RequestServices.GetRequiredService<IErrorRepository>();
+            await repository.Create(error);
+
+            await Results.BadRequest(new
+            {
+                type = "Error",
+                message = "an unexpected exception has occured",
+                statud = 500
+            }).ExecuteAsync(context);
+        })); 
+        app.UseStatusCodePages(); //return a Status code, when an unhandle Exeption occurs.
 
         app.UseCors();
         app.UseOutputCache();
+        app.MapGet("/error", () =>
+        {
+            throw new InvalidOperationException("Error occurs on /error MapGet");
+        });
         //defining MapGroup
         app.MapGroup("/genre").MapGenres();
         app.MapGroup("/actor").MapActors();

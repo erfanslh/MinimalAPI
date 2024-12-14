@@ -16,7 +16,7 @@ namespace MinimalAPIMoviez.EndPoints
         public static RouteGroupBuilder MapMovies(this RouteGroupBuilder routeGroup)
         {
             routeGroup.MapPost("/", Create).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>();
-            routeGroup.MapPost("/{id:int}/assignGenre",AssignGenres).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>()>;
+            routeGroup.MapPost("/{id:int}/assignGenre",AssignGenres).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>();
             routeGroup.MapPost("/{id:int}/assignActor", AssignActor);
             routeGroup.MapGet("/", GetAllMovies)
                                         .CacheOutput(c => c.Expire(TimeSpan.FromMinutes(1)).Tag("movie-get"));

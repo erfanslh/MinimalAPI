@@ -35,5 +35,6 @@ namespace MinimalAPIMoviez
         public DbSet<Comment> comments { get; set; }
         public DbSet<GenreMovie> GenresMovies { get; set; }
         public DbSet<ActorMovie> ActorMovies { get; set; }
+        public DbSet<Error> Errors { get; set; }
     }
 }
