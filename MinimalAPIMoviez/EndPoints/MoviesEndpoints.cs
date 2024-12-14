@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using MinimalAPIMoviez.DTOs;
 using MinimalAPIMoviez.Entities;
+using MinimalAPIMoviez.Filters;
 using MinimalAPIMoviez.Repositories;
 using MinimalAPIMoviez.Services;
 
@@ -14,8 +15,8 @@ namespace MinimalAPIMoviez.EndPoints
         private readonly static string container = "movies";
         public static RouteGroupBuilder MapMovies(this RouteGroupBuilder routeGroup)
         {
-            routeGroup.MapPost("/", Create).DisableAntiforgery();
-            routeGroup.MapPost("/{id:int}/assignGenre",AssignGenres).DisableAntiforgery();
+            routeGroup.MapPost("/", Create).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>();
+            routeGroup.MapPost("/{id:int}/assignGenre",AssignGenres).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>()>;
             routeGroup.MapPost("/{id:int}/assignActor", AssignActor);
             routeGroup.MapGet("/", GetAllMovies)
                                         .CacheOutput(c => c.Expire(TimeSpan.FromMinutes(1)).Tag("movie-get"));

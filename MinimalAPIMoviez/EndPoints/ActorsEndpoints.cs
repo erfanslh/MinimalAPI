@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using MinimalAPIMoviez.DTOs;
 using MinimalAPIMoviez.Entities;
+using MinimalAPIMoviez.Filters;
 using MinimalAPIMoviez.Repositories;
 using MinimalAPIMoviez.Services;
 using System.Runtime.CompilerServices;
@@ -22,8 +23,8 @@ namespace MinimalAPIMoviez.EndPoints
                 .CacheOutput(c=> c.Expire(TimeSpan.FromMinutes(1)).Tag("actors-get"));
             routeGroup.MapGet("/{id:int}", GetById);
             routeGroup.MapGet("getByName/{name}", GetByName);
-            routeGroup.MapPost("/", Create).DisableAntiforgery();
-            routeGroup.MapPut("/{id:int}", Update).DisableAntiforgery();
+            routeGroup.MapPost("/", Create).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateActorDTO>>();
+            routeGroup.MapPut("/{id:int}", Update).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateActorDTO>>();
             routeGroup.MapDelete("/{id:int}", Delete);
             return routeGroup;
         }
@@ -64,17 +65,12 @@ namespace MinimalAPIMoviez.EndPoints
         #region Create Actor
         //We use [FormForm] cause we have file in our CreateActorDTO entity
         // Task<Type-of-Task <The template we want to return>>
-        static async Task<Results<Created<ActorDTO>,ValidationProblem>> Create([FromForm] CreateActorDTO createActorDTO,
+        static async Task<IResult> Create([FromForm] CreateActorDTO createActorDTO,
             IMapper mapper,
             IActorRepository repository,
             IOutputCacheStore outputCache,
-            IFileStorage fileStorage, IValidator<CreateActorDTO> validator)
+            IFileStorage fileStorage)
         {
-            var validationResult = await validator.ValidateAsync(createActorDTO);
-            if (!validationResult.IsValid)
-            {
-                return TypedResults.ValidationProblem(validationResult.ToDictionary());
-            }
             var actor = mapper.Map<Actor>(createActorDTO);
             if (createActorDTO.Imagename is not null)
             {

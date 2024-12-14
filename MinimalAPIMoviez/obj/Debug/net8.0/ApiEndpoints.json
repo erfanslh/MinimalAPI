@@ -44,18 +44,9 @@
     ],
     "ReturnTypes": [
       {
-        "Type": "MinimalAPIMoviez.DTOs.ActorDTO",
-        "MediaTypes": [
-          "application/json"
-        ],
-        "StatusCode": 201
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
-        "MediaTypes": [
-          "application/problem\u002Bjson"
-        ],
-        "StatusCode": 400
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 200
       }
     ]
   },
@@ -192,13 +183,6 @@
           "application/json"
         ],
         "StatusCode": 201
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
-        "MediaTypes": [
-          "application/problem\u002Bjson"
-        ],
-        "StatusCode": 400
       }
     ]
   },
@@ -272,19 +256,7 @@
       {
         "Type": "System.Void",
         "MediaTypes": [],
-        "StatusCode": 404
-      },
-      {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 204
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Http.HttpValidationProblemDetails",
-        "MediaTypes": [
-          "application/problem\u002Bjson"
-        ],
-        "StatusCode": 400
+        "StatusCode": 200
       }
     ]
   },

@@ -13,5 +13,6 @@ namespace MinimalAPIMoviez.Repositories
         Task Delete(int id);
         Task<List<Actor>> GetByName(string name);
         Task<List<int>> Exists(List<int> ids);
+        Task<bool> ActorExists(string name, DateTime birthDayDate);
     }
 }

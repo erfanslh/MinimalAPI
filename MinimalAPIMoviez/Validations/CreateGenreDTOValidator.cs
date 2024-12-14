@@ -16,25 +16,17 @@ namespace MinimalAPIMoviez.Validations
                 int.TryParse( routeValueIdString, out id );
             }
             RuleFor(p => p.Name)
-                .NotEmpty().WithMessage("The {PropertyName} should not be empty")
-                .MaximumLength(150).WithMessage("The {PropertyName} should has maximum {MaxLength} Character")
-                .Must(FirstLetterUpperCase).WithMessage("First letter of {PropertyName} should be UpperCase")
+                .NotEmpty().WithMessage(ValidationUtilities.NotEmptyMessage)
+                .MaximumLength(150).WithMessage(ValidationUtilities.MaxLengthMessage)
+                .Must(ValidationUtilities.FirstLetterUpperCase).WithMessage(ValidationUtilities.UpperCaseMessage)
                 .MustAsync(async (name, _) =>
                 {
                     var exists = await genresRepository.Exists(id, name);
                     return !exists;
-                }).WithMessage($"This record is already stored and cant be repeat");
+                }).WithMessage("This record is already stored and cant be repeat");
             
                 
         }
-        private bool FirstLetterUpperCase(string value)
-        {
-            if (string.IsNullOrEmpty(value))
-            { 
-                return true;
-            }
-            var firstLetter = value[0].ToString();
-            return firstLetter == firstLetter.ToUpper();
-        }
+
     }
 }

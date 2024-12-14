@@ -20,6 +20,11 @@ namespace MinimalAPIMoviez.Repositories
         {
             return await context.actors.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
         }
+        public async Task<bool> ActorExists(string name, DateTime birthDayDate)
+        {
+            return await context.actors.AsNoTracking().AnyAsync(p => p.Name == name && p.BirthDate == birthDayDate);
+        }
+
         public async Task<List<Actor>> GetByName(string name)
         {
             return await context.actors.Where(a=> a.Name.Contains(name)).OrderBy(a=> a.Name).ToListAsync();
