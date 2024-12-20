@@ -12,6 +12,9 @@ using MinimalAPIMoviez.Services;
 using System.Collections.Generic;
 using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using MinimalAPIMoviez.Utilities;
 
 internal class Program
 {
@@ -24,6 +27,14 @@ internal class Program
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+        #region Services for Authentication Users
+        builder.Services.AddIdentityCore<IdentityUser>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
+        builder.Services.AddScoped<UserManager<IdentityUser>>();
+        builder.Services.AddScoped<SignInManager<IdentityUser>>();
+        #endregion
 
         builder.Services.AddCors(options =>
         {
@@ -55,6 +66,20 @@ internal class Program
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
         builder.Services.AddProblemDetails();
+
+        builder.Services.AddAuthentication().AddJwtBearer
+                (option => option.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateIssuerSigningKey = true,
+
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+
+                    IssuerSigningKeys = KeysHandler.GetAllKeys(builder.Configuration)
+                });
+        builder.Services.AddAuthorization();
 
         //Service Zone - End
 
@@ -88,6 +113,7 @@ internal class Program
 
         app.UseCors();
         app.UseOutputCache();
+        app.UseAuthorization();
         app.MapGet("/error", () =>
         {
             throw new InvalidOperationException("Error occurs on /error MapGet");
@@ -96,6 +122,7 @@ internal class Program
         app.MapGroup("/genre").MapGenres();
         app.MapGroup("/actor").MapActors();
         app.MapGroup("/movie").MapMovies();
+        app.MapGroup("/users").MapUser();
 
         // We get Comments on a Movie so first we need the ID of the Movie then get into comments
         app.MapGroup("/movie/{movieId:int}/comments").MapComment();

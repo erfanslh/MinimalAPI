@@ -164,7 +164,7 @@
   },
   {
     "ContainingType": "Program\u002B\u003C\u003Ec",
-    "Method": "\u003CMain\u003Eb__0_3",
+    "Method": "\u003CMain\u003Eb__0_4",
     "RelativePath": "error",
     "HttpMethod": "GET",
     "IsController": false,
@@ -585,6 +585,68 @@
         "Type": "System.Void",
         "MediaTypes": [],
         "StatusCode": 200
+      }
+    ]
+  },
+  {
+    "ContainingType": "MinimalAPIMoviez.EndPoints.UserEndpoints",
+    "Method": "Login",
+    "RelativePath": "users/Login",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userCredentialsDTO",
+        "Type": "MinimalAPIMoviez.DTOs.UserCredentialsDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MinimalAPIMoviez.DTOs.AuthenticationResponseDTO",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 400
+      }
+    ]
+  },
+  {
+    "ContainingType": "MinimalAPIMoviez.EndPoints.UserEndpoints",
+    "Method": "Register",
+    "RelativePath": "users/Register",
+    "HttpMethod": "POST",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userCredentialsDTO",
+        "Type": "MinimalAPIMoviez.DTOs.UserCredentialsDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "MinimalAPIMoviez.DTOs.AuthenticationResponseDTO",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Collections.Generic.IEnumerable\u00601[[Microsoft.AspNetCore.Identity.IdentityError, Microsoft.Extensions.Identity.Core, Version=8.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 400
       }
     ]
   }

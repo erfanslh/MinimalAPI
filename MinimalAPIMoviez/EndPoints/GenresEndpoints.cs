@@ -22,7 +22,7 @@ namespace MinimalAPIMoviez.EndPoints
             //Get All
             routeGroupBuilder.MapGet("/", GetAll).CacheOutput(x => x.Expire(TimeSpan.FromSeconds(15)).Tag("cache-genre"));
             //Get an Entity
-            routeGroupBuilder.MapGet("/{id:int}", GetById);
+            routeGroupBuilder.MapGet("/{id:int}", GetById).RequireAuthorization();
             //Edit
             routeGroupBuilder.MapPut("/{id:int}", Update).AddEndpointFilter<ValidationFilter<CreateGenreDTO>>();
             //Delete

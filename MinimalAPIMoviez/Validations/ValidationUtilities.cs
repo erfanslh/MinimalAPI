@@ -7,6 +7,11 @@ namespace MinimalAPIMoviez.Validations
         public static string MaxLengthMessage = "The {PropertyName} should has maximum {MaxLength} Character";
         public static string UpperCaseMessage = "First letter of {PropertyName} should be UpperCase";
         public static string NotEmptyMessage = "The {PropertyName} should not be empty";
+
+        public static string MinLengthMessage = "The {PropertyName} should has minimum 8 Character";
+
+        public static string EmailAddressMessage = "The {PropertyName} is not a valid Email address";
+
         public static string GreaterThanDate(DateTime value) => "The Birthday of the Actor should be greater than " + value.ToString("yyyy-MM-dd");
         public static string ExistsActor(string name, DateTime date) => "The Actor with the " + name + " and Birthdate " + date.ToString("yyyy-MMMM-dd") + " already exists";
 
