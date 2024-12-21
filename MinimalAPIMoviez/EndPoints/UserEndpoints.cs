@@ -1,5 +1,4 @@
-﻿//using Hl7.Fhir.Utility;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -76,7 +75,7 @@ namespace MinimalAPIMoviez.EndPoints
         {
             var claimList = new List<Claim>
             {
-                new Claim("Email", userCredentialsDTO.Email)
+                new Claim("email", userCredentialsDTO.Email)
              // new Claim(What we need, value we give)
             };
 

@@ -62,22 +62,28 @@ internal class Program
         builder.Services.AddAutoMapper(typeof(Program));
         //Add this service to use HttpContextAccessor
         builder.Services.AddHttpContextAccessor();
+        builder.Services.AddTransient<IUserServices, UserServices>();
 
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
         builder.Services.AddProblemDetails();
 
         builder.Services.AddAuthentication().AddJwtBearer
-                (option => option.TokenValidationParameters = new TokenValidationParameters
+                (option =>
                 {
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ValidateIssuerSigningKey = true,
+                    option.MapInboundClaims = false;
 
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero,
+                    option.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                        ValidateIssuerSigningKey = true,
 
-                    IssuerSigningKeys = KeysHandler.GetAllKeys(builder.Configuration)
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero,
+
+                        IssuerSigningKeys = KeysHandler.GetAllKeys(builder.Configuration)
+                    };
                 });
         builder.Services.AddAuthorization();
 

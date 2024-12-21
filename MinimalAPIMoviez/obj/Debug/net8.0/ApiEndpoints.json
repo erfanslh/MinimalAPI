@@ -470,6 +470,13 @@
         "Type": "System.Void",
         "MediaTypes": [],
         "StatusCode": 404
+      },
+      {
+        "Type": "System.String",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 400
       }
     ]
   },

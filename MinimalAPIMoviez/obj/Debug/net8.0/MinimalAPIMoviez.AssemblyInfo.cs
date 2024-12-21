@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MinimalAPIMoviez")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+48df9e66c4aed571b83452cc9686b9c67159b9eb")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+23bc664a558018c271ab8ba80b27eaa45d498ccb")]
 [assembly: System.Reflection.AssemblyProductAttribute("MinimalAPIMoviez")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MinimalAPIMoviez")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
