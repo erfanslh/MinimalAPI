@@ -18,16 +18,18 @@ namespace MinimalAPIMoviez.EndPoints
         {
             #region CRUD
             //Create
-            routeGroupBuilder.MapPost("/", Insert).AddEndpointFilter<ValidationFilter<CreateGenreDTO>>();
+            routeGroupBuilder.MapPost("/", Insert).AddEndpointFilter<ValidationFilter<CreateGenreDTO>>()
+                .RequireAuthorization("isadmin");
             //Get All
             routeGroupBuilder.MapGet("/", GetAll).CacheOutput(x => x.Expire(TimeSpan.FromSeconds(15)).Tag("cache-genre"));
             //Get an Entity
             routeGroupBuilder.MapGet("/{id:int}", GetById).RequireAuthorization();
             //Edit
-            routeGroupBuilder.MapPut("/{id:int}", Update).AddEndpointFilter<ValidationFilter<CreateGenreDTO>>();
+            routeGroupBuilder.MapPut("/{id:int}", Update).AddEndpointFilter<ValidationFilter<CreateGenreDTO>>()
+                .RequireAuthorization("isadmin");
             //Delete
             //***   "/genre (in MapGroup added)  /{id:int}"
-            routeGroupBuilder.MapDelete("/{id:int}", Delete);
+            routeGroupBuilder.MapDelete("/{id:int}", Delete).RequireAuthorization("isadmin");
             #endregion
 
             return routeGroupBuilder;

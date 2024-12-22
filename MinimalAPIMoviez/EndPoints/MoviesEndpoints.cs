@@ -15,15 +15,47 @@ namespace MinimalAPIMoviez.EndPoints
         private readonly static string container = "movies";
         public static RouteGroupBuilder MapMovies(this RouteGroupBuilder routeGroup)
         {
-            routeGroup.MapPost("/", Create).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>();
-            routeGroup.MapPost("/{id:int}/assignGenre",AssignGenres).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>();
-            routeGroup.MapPost("/{id:int}/assignActor", AssignActor);
+            routeGroup.MapPost("/", Create).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>()
+                .RequireAuthorization("isadmin");
+            routeGroup.MapPost("/{id:int}/assignGenre",AssignGenres).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>()
+                .RequireAuthorization("isadmin");
+            routeGroup.MapPost("/{id:int}/assignActor", AssignActor).RequireAuthorization("isadmin");
+            routeGroup.MapPut("/", Update).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>()
+                .RequireAuthorization("isadmin");
+            routeGroup.MapDelete("/", Delete);
             routeGroup.MapGet("/", GetAllMovies)
                                         .CacheOutput(c => c.Expire(TimeSpan.FromMinutes(1)).Tag("movie-get"));
             routeGroup.MapGet("/{id:int}", GetByID);
             return routeGroup;
         }
+        static async Task<IResult> Delete(int id,IMovieRepository movieRepository,
+            IOutputCacheStore cache)
+        {
+            var findMovie = await movieRepository.Exists(id);
+            if (findMovie == false)
+            {
+                return TypedResults.BadRequest("Movie does not exist");
+            }
+            await movieRepository.Delete(id);
+            await cache.EvictByTagAsync("movie-get", default);
+            return TypedResults.NoContent();
 
+        }
+        static async Task<IResult> Update(int id, CreateMovieDTO createMovieDTO,
+            IMovieRepository movieRepository, 
+            IOutputCacheStore cache,
+            IMapper mapper)
+        {
+            var findMovie = await movieRepository.Exists(id);
+            if (findMovie == false)
+            {
+                return TypedResults.BadRequest("the movie does not exist");
+            }
+            var MapMovie = mapper.Map<Movie>(createMovieDTO);
+            await movieRepository.Update(MapMovie);
+            await cache.EvictByTagAsync("movie-get", default);
+            return TypedResults.NoContent();
+        }
         public static async Task<Created<MovieDTO>> Create([FromForm] CreateMovieDTO createMovieDTO, 
                 IMovieRepository repository, IFileStorage fileStorage, IMapper mapper,IOutputCacheStore cache )
         {

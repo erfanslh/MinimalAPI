@@ -23,9 +23,11 @@ namespace MinimalAPIMoviez.EndPoints
                 .CacheOutput(c=> c.Expire(TimeSpan.FromMinutes(1)).Tag("actors-get"));
             routeGroup.MapGet("/{id:int}", GetById);
             routeGroup.MapGet("getByName/{name}", GetByName);
-            routeGroup.MapPost("/", Create).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateActorDTO>>();
-            routeGroup.MapPut("/{id:int}", Update).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateActorDTO>>();
-            routeGroup.MapDelete("/{id:int}", Delete);
+            routeGroup.MapPost("/", Create).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateActorDTO>>()
+                .RequireAuthorization("isadmin");
+            routeGroup.MapPut("/{id:int}", Update).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateActorDTO>>()
+                .RequireAuthorization("isadmin");
+            routeGroup.MapDelete("/{id:int}", Delete).RequireAuthorization("isadmin");
             return routeGroup;
         }
         #region Get all Actors
