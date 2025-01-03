@@ -85,8 +85,11 @@ internal class Program
                         IssuerSigningKeys = KeysHandler.GetAllKeys(builder.Configuration)
                     };
                 });
-        builder.Services.AddAuthorization (option => option.AddPolicy("isadmin", policy => 
-                                                                            policy.RequireClaim("isadmin")));
+        builder.Services.AddAuthorization(option =>
+        {
+            option.AddPolicy("isadmin", policy => policy.RequireClaim("isadmin"));
+        });
+        
 
         //Service Zone - End
 

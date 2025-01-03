@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using MinimalAPIMoviez.DTOs;
 using MinimalAPIMoviez.Filters;
+using MinimalAPIMoviez.Services;
 using MinimalAPIMoviez.Utilities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -16,8 +17,55 @@ namespace MinimalAPIMoviez.EndPoints
         {
             group.MapPost("/Register", Register).AddEndpointFilter<ValidationFilter<UserCredentialsDTO>>();
             group.MapPost("/Login", Login).AddEndpointFilter<ValidationFilter<UserCredentialsDTO>>();
+
+            group.MapPost("makeAdmin", MakeAdmin).AddEndpointFilter<ValidationFilter<EditClaimDTO>>();
+            //.RequireAuthorization("isadmin");
+
+            group.MapPost("removeAdmin", RemoveAdmin).AddEndpointFilter<ValidationFilter<EditClaimDTO>>()
+                .RequireAuthorization("isadmin");
+            group.MapGet("/renewToken", Renew).RequireAuthorization();
             return group;
         }
+
+        static async Task<IResult> MakeAdmin(EditClaimDTO editClaim, 
+            [FromServices] UserManager<IdentityUser> userManager)
+        {
+            // find User by Email
+            var user = await userManager.FindByEmailAsync(editClaim.Email);
+            if (user == null)
+            {
+                return TypedResults.NotFound();
+            }
+            await userManager.AddClaimAsync(user, new Claim("isadmin", "true"));
+            return TypedResults.NoContent();
+
+        }
+        private static async Task<IResult> Renew(IUserServices userServices, IConfiguration configuration
+            , [FromServices] UserManager<IdentityUser> userManager)
+        {
+            var user = await userServices.GetUser();
+            if (user == null)
+            {
+                return TypedResults.NotFound();
+            }
+            var userCredential = new UserCredentialsDTO { Email = user.Email! };
+            var response = await TokenBuilder(userCredential, configuration, userManager);
+            return TypedResults.Ok(response);
+        }
+        static async Task<IResult> RemoveAdmin(EditClaimDTO editClaim, 
+            [FromServices] UserManager<IdentityUser> userManager)
+        {
+            // find User by Email
+            var user = await userManager.FindByEmailAsync(editClaim.Email);
+            if (user == null)
+            {
+                return TypedResults.NotFound();
+            }
+            await userManager.RemoveClaimAsync(user, new Claim("isadmin", "true"));
+            return TypedResults.NoContent();
+
+        }
+
         static async Task<Results<Ok<AuthenticationResponseDTO>, BadRequest<string>>> 
             Login(UserCredentialsDTO userCredentialsDTO,
             [FromServices] UserManager<IdentityUser> userManager, 
