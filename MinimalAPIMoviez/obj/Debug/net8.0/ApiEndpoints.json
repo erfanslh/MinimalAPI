@@ -258,13 +258,13 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "id",
-        "Type": "System.Int32",
+        "Name": "createGenreDTO",
+        "Type": "MinimalAPIMoviez.DTOs.CreateGenreDTO",
         "IsRequired": true
       },
       {
-        "Name": "createGenreDTO",
-        "Type": "MinimalAPIMoviez.DTOs.CreateGenreDTO",
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

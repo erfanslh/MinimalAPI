@@ -9,6 +9,7 @@ using System.Security.Cryptography.Xml;
 using AutoMapper;
 using FluentValidation;
 using MinimalAPIMoviez.Filters;
+using MinimalAPIMoviez.DTOs.GenreRequestDTO;
 
 namespace MinimalAPIMoviez.EndPoints
 {
@@ -39,12 +40,12 @@ namespace MinimalAPIMoviez.EndPoints
         //*****
         // In Methods all Results are converted to TypedResults due to better type safety and enhanced readability
         //*****
-        static async Task<Ok<List<GenreDTO>>> GetAll(IGenresRepository repository, IMapper mapper)
+        static async Task<Ok<List<GenreDTO>>> GetAll([AsParameters] GetAllGenresRequestDTO model)
         {
-            var genre = await repository.GetAll();
+            var genre = await model.Repository.GetAll();
             //Using Select() in Linq - GenreDTO include => {empty id and empty name}
             // and we insert "genre" information into empty GenreDTO
-            var genreDTO = mapper.Map<List<GenreDTO>>(genre);
+            var genreDTO = model.Mapper.Map<List<GenreDTO>>(genre);
             return TypedResults.Ok(genreDTO);
         }
         //*****
@@ -64,58 +65,51 @@ namespace MinimalAPIMoviez.EndPoints
         //*****
 
         //Create
-        static async Task<Created<GenreDTO>> Insert(CreateGenreDTO createGenreDTO,
-            IOutputCacheStore iCache,
-            IGenresRepository repository,
-            IMapper mapper)
+        static async Task<Created<GenreDTO>> Insert(CreateGenreDTO createGenreDTO, [AsParameters] InsertGenresRequestDTO model)
+           
         {
-            var genre = mapper.Map<Genre>(createGenreDTO);
-            var id = await repository.Create(genre);
-            await iCache.EvictByTagAsync("cache-genre", default);
+            var genre = model.Mapper.Map<Genre>(createGenreDTO);
+            var id = await model.Repository.Create(genre);
+            await model.CacheStore.EvictByTagAsync("cache-genre", default);
 
-            var genreDTO = mapper.Map<GenreDTO>(genre);
+            var genreDTO = model.Mapper.Map<GenreDTO>(genre);
 
             return TypedResults.Created($"/genre/{id}", genreDTO);
         }
         //******
 
         //Update
-        static async Task<IResult> Update(int ID,
-            CreateGenreDTO createGenreDTO,
-            IGenresRepository repository,
-            IOutputCacheStore cacheStore,
-            IMapper mapper)
+        static async Task<IResult> Update(CreateGenreDTO createGenreDTO, [AsParameters] UpdateGenresRequestDTO model)
         {
             //*** here we should use "await" ==> cuz it has Async and we are working with DB
-            var Exists = await repository.Exist(ID);
+            var Exists = await model.Repository.Exist(model.ID);
             if (!Exists)
             {
                 return TypedResults.NotFound();
             }
-            var genre = mapper.Map<Genre>(createGenreDTO);
+            var genre = model.Mapper.Map<Genre>(createGenreDTO);
             //We need ID to update, which is not included in our DTO "createGenreDTO"
-            genre.Id = ID; 
+            genre.Id = model.ID; 
           //*****************
-            await repository.Update(genre);
+            await model.Repository.Update(genre);
             // we Use IOutputCacheStore to cleanup the Caches by creating an Object of it
             // ("IOutputCacheStore cacheStore"), then we use the object to implement cleanup Cache
-            await cacheStore.EvictByTagAsync("cache-genre", default);
+            await model.CacheStore.EvictByTagAsync("cache-genre", default);
             //cuz we dont return anything in Update so we use
             //    "Results.NoContent()"
             return TypedResults.NoContent();
         }
         //Delete
-        static async Task<Results<NotFound, NoContent>> Delete(IGenresRepository repository, int ID
-            , IOutputCacheStore cacheStore)
+        static async Task<Results<NotFound, NoContent>> Delete([AsParameters] DeleteGenresRequestDTO model)
         {
-            var existing = await repository.Exist(ID);
+            var existing = await model.Repository.Exist(model.ID);
             if (!existing)
             {
                 return TypedResults.NotFound();
             }
 
-            await repository.Delete(ID);
-            await cacheStore.EvictByTagAsync("cache-genre", default);
+            await model.Repository.Delete(model.ID);
+            await model.CacheStore.EvictByTagAsync("cache-genre", default);
             return TypedResults.NoContent();
         }
         #endregion

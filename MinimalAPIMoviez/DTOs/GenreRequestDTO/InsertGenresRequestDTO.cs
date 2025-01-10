@@ -1,0 +1,14 @@
+﻿using AutoMapper;
+using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.EntityFrameworkCore.Diagnostics.Internal;
+using MinimalAPIMoviez.Repositories;
+
+namespace MinimalAPIMoviez.DTOs.GenreRequestDTO
+{
+    public class InsertGenresRequestDTO
+    {
+        public IOutputCacheStore CacheStore { get; set; } = null!;
+        public IGenresRepository Repository { get; set; } = null!;
+        public IMapper Mapper { get; set; } = null!;
+    }
+}
