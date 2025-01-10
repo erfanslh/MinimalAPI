@@ -8,14 +8,14 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "page",
+        "Name": "Page",
         "Type": "System.Int32",
-        "IsRequired": false
+        "IsRequired": true
       },
       {
-        "Name": "recordsperpage",
+        "Name": "RecordsPerPage",
         "Type": "System.Int32",
-        "IsRequired": false
+        "IsRequired": true
       }
     ],
     "ReturnTypes": [
@@ -88,13 +88,13 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "id",
-        "Type": "System.Int32",
+        "Name": "createActorDTO",
+        "Type": "MinimalAPIMoviez.DTOs.CreateActorDTO",
         "IsRequired": true
       },
       {
-        "Name": "createActorDTO",
-        "Type": "MinimalAPIMoviez.DTOs.CreateActorDTO",
+        "Name": "id",
+        "Type": "System.Int32",
         "IsRequired": true
       }
     ],

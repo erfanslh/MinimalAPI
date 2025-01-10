@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
 using MinimalAPIMoviez.DTOs;
+using MinimalAPIMoviez.DTOs.ActorRequestDTO;
 using MinimalAPIMoviez.Entities;
 using MinimalAPIMoviez.Filters;
 using MinimalAPIMoviez.Repositories;
@@ -32,23 +33,23 @@ namespace MinimalAPIMoviez.EndPoints
         }
         #region Get all Actors
 
-        static async Task<Ok<List<ActorDTO>>> GetAll(IActorRepository repository, IMapper mapper,
-                int page =1, int recordsperpage = 10)
+        static async Task<Ok<List<ActorDTO>>> GetAll([AsParameters] GetAllActorRequestDTO model)
         {
-            var pagination = new PaginationDTO { Page = page,RecordsPerPage = recordsperpage };
-            var allActors = await repository.GetAll(pagination);
-            var map = mapper.Map<List<ActorDTO>>(allActors);
+            var pagination = new PaginationDTO { Page = model.Page,RecordsPerPage = model.RecordsPerPage };
+            var allActors = await model.Repository.GetAll(pagination);
+            var map = model.Mapper.Map<List<ActorDTO>>(allActors);
             return TypedResults.Ok(map);
         }
         #endregion
 
         #region Get Actors by ID
-        static async Task<Results<Ok<ActorDTO>, NotFound>> GetById(int id, IActorRepository repository, IMapper mapper)
+        static async Task<Results<Ok<ActorDTO>, NotFound>> GetById([AsParameters] GetByIdActorRequestDTO model)
         {
-            var findActor = await repository.GetByID(id);
+            var findActor = await model.Repository.GetByID(model.ID);
+
             if (findActor is not null)
             {
-                var map = mapper.Map<ActorDTO>(findActor);
+                var map = model.Mapper.Map<ActorDTO>(findActor);
                 return TypedResults.Ok(map);
             }
             return TypedResults.NotFound();
@@ -56,10 +57,10 @@ namespace MinimalAPIMoviez.EndPoints
         #endregion
 
         #region Filter Actors by Name
-        static async Task<Ok<List<ActorDTO>>> GetByName(string name, IActorRepository repository, IMapper mapper)
+        static async Task<Ok<List<ActorDTO>>> GetByName([AsParameters] GetByNameActorRequestDTO model)
         {
-            var actorName = await repository.GetByName(name);
-            var dto = mapper.Map<List<ActorDTO>>(actorName);
+            var actorName = await model.Repository.GetByName(model.Name);
+            var dto = model.Mapper.Map<List<ActorDTO>>(actorName);
             return TypedResults.Ok(dto);
         }
         #endregion
@@ -67,48 +68,43 @@ namespace MinimalAPIMoviez.EndPoints
         #region Create Actor
         //We use [FormForm] cause we have file in our CreateActorDTO entity
         // Task<Type-of-Task <The template we want to return>>
-        static async Task<IResult> Create([FromForm] CreateActorDTO createActorDTO,
-            IMapper mapper,
-            IActorRepository repository,
-            IOutputCacheStore outputCache,
-            IFileStorage fileStorage)
+        static async Task<IResult> Create([FromForm] CreateActorDTO createActorDTO, [AsParameters] CreateActorRequestDTO model )
         {
-            var actor = mapper.Map<Actor>(createActorDTO);
+            var actor = model.Mapper.Map<Actor>(createActorDTO);
             if (createActorDTO.Imagename is not null)
             {
-                var url = await fileStorage.Store(container, createActorDTO.Imagename);
+                var url = await model.FileStorage.Store(container, createActorDTO.Imagename);
                 actor.Imagename = url;
             }
-            var id = await repository.Create(actor);
-            await outputCache.EvictByTagAsync("actors-get", default);
-            var actorDTO = mapper.Map<ActorDTO>(actor);
+            var id = await model.Repository.Create(actor);
+            await model.CacheStore.EvictByTagAsync("actors-get", default);
+            var actorDTO = model.Mapper.Map<ActorDTO>(actor);
             return TypedResults.Created($"/actor/{id}", actorDTO);
 
         }
         #endregion
 
         #region Update an Actor
-        static async Task<Results<NotFound,NoContent>> Update(int id, IActorRepository repository, [FromForm]CreateActorDTO createActorDTO,
-            IMapper mapper, IOutputCacheStore cacheStore, IFileStorage fileStorage)
+        static async Task<Results<NotFound,NoContent>> Update([FromForm]CreateActorDTO createActorDTO, [AsParameters] UpdateActorRequestDTO model)
         {
-            var findActor = await repository.GetByID(id);
+            var findActor = await model.Repository.GetByID(model.ID);
             if (findActor is null)
             {
                 return TypedResults.NotFound();
             }
 
-            var editActor = mapper.Map<Actor>(createActorDTO);
-            editActor.Id = id;
+            var editActor = model.Mapper.Map<Actor>(createActorDTO);
+            editActor.Id = model.ID;
             editActor.Imagename = findActor.Imagename;
 
             if (createActorDTO.Imagename is not null)
             {
-                var url = await fileStorage.Update(editActor.Imagename, container, createActorDTO.Imagename);
+                var url = await model.FileStorage.Update(editActor.Imagename, container, createActorDTO.Imagename);
                 editActor.Imagename = url;
             }
 
-            await repository.Update(editActor);
-            await cacheStore.EvictByTagAsync("actors-get", default);
+            await model.Repository.Update(editActor);
+            await model.CacheStore.EvictByTagAsync("actors-get", default);
             return TypedResults.NoContent();
 
         }
@@ -116,21 +112,19 @@ namespace MinimalAPIMoviez.EndPoints
 
         #region Delete an Actor
 
-        static async Task<Results<NotFound, NoContent>> Delete(int id, IActorRepository repository,
-                IOutputCacheStore cacheStore, IFileStorage fileStorage
-           )
+        static async Task<Results<NotFound, NoContent>> Delete([AsParameters] DeleteActorRequestDTO model )
         {
-            var findActor = await repository.GetByID(id);
+            var findActor = await model.Repository.GetByID(model.ID);
             if (findActor is null)
             {
                 return TypedResults.NotFound();
             }
 
-            await repository.Delete(id);
+            await model.Repository.Delete(model.ID);
 
-            await fileStorage.Delete(findActor.Imagename, container);
+            await model.FileStorage.Delete(findActor.Imagename, container);
 
-            await cacheStore.EvictByTagAsync("actors-get", default);
+            await model.CacheStore.EvictByTagAsync("actors-get", default);
             return TypedResults.NoContent();
         }
 
