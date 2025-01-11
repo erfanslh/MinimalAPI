@@ -35,11 +35,12 @@ namespace MinimalAPIMoviez.EndPoints
 
             return routeGroupBuilder;
         }
-        #region Methods for Lambda
+
         //We made all our CRUD process (Endpoints) more readable by groupping them into Methods
         //*****
         // In Methods all Results are converted to TypedResults due to better type safety and enhanced readability
         //*****
+        #region GetAll
         static async Task<Ok<List<GenreDTO>>> GetAll([AsParameters] GetAllGenresRequestDTO model)
         {
             var genre = await model.Repository.GetAll();
@@ -48,8 +49,9 @@ namespace MinimalAPIMoviez.EndPoints
             var genreDTO = model.Mapper.Map<List<GenreDTO>>(genre);
             return TypedResults.Ok(genreDTO);
         }
-        //*****
-        //Get by ID
+        #endregion
+
+        #region Get_by_Id
         static async Task<Results<Ok<GenreDTO>, NotFound>> GetById(IGenresRepository repository, int ID
             , IMapper mapper)
         {
@@ -62,9 +64,9 @@ namespace MinimalAPIMoviez.EndPoints
             var genreDTO = mapper.Map<GenreDTO>(genre);
             return TypedResults.Ok(genreDTO);
         }
-        //*****
+        #endregion
 
-        //Create
+        #region Create
         static async Task<Created<GenreDTO>> Insert(CreateGenreDTO createGenreDTO, [AsParameters] InsertGenresRequestDTO model)
            
         {
@@ -76,9 +78,9 @@ namespace MinimalAPIMoviez.EndPoints
 
             return TypedResults.Created($"/genre/{id}", genreDTO);
         }
-        //******
+        #endregion
 
-        //Update
+        #region Update
         static async Task<IResult> Update(CreateGenreDTO createGenreDTO, [AsParameters] UpdateGenresRequestDTO model)
         {
             //*** here we should use "await" ==> cuz it has Async and we are working with DB
@@ -99,6 +101,9 @@ namespace MinimalAPIMoviez.EndPoints
             //    "Results.NoContent()"
             return TypedResults.NoContent();
         }
+        #endregion
+
+        #region Delete
         //Delete
         static async Task<Results<NotFound, NoContent>> Delete([AsParameters] DeleteGenresRequestDTO model)
         {
@@ -113,5 +118,6 @@ namespace MinimalAPIMoviez.EndPoints
             return TypedResults.NoContent();
         }
         #endregion
+
     }
 }

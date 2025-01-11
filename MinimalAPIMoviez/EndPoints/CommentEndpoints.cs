@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.OutputCaching;
 using MinimalAPIMoviez.DTOs;
+using MinimalAPIMoviez.DTOs.CommentRequestDTO;
 using MinimalAPIMoviez.Entities;
 using MinimalAPIMoviez.Filters;
 using MinimalAPIMoviez.Repositories;
@@ -23,48 +24,49 @@ namespace MinimalAPIMoviez.EndPoints
             return routeGroup;
         }
 
-        static async Task<IResult> GetAll(int movieID, ICommentRepository commentRepository,
-            IMovieRepository movieRepository, IMapper mapper)
+        #region GetAll
+        static async Task<IResult> GetAll([AsParameters] GetAllCommentsRequestDTO model)
         {
-            if (!await movieRepository.Exists(movieID))
+            if (!await model.MovieRepository.Exists(model.MovieID))
             {
                 return TypedResults.NotFound();
             }
-            var comment = await commentRepository.GetAll(movieID);
-            var commentDTO = mapper.Map<List<CommentDTO>>(comment);
+            var comment = await model.CommentRepository.GetAll(model.MovieID);
+            var commentDTO = model.Mapper.Map<List<CommentDTO>>(comment);
             return TypedResults.Ok(commentDTO);
         }
+        #endregion
 
-        static async Task<Results<Ok<CommentDTO>,NotFound>> GetById(int movieID, int id, ICommentRepository commentRepository,
-            IMovieRepository movieRepository, IMapper mapper)
+        #region GetByID
+        static async Task<Results<Ok<CommentDTO>,NotFound>> GetById([AsParameters] GetByIDCommentsRequestDTO model)
         {
-            if (!await movieRepository.Exists(movieID))
+            if (!await model.MovieRepository.Exists(model.MovieID))
             {
                 return TypedResults.NotFound();
             }
-            var comment = await commentRepository.GetByID(id);
+            var comment = await model.CommentRepository.GetByID(model.ID);
             if (comment ==null)
             {
                 return TypedResults.NotFound();
             }
-            var commentDTO = mapper.Map<CommentDTO>(comment);
+            var commentDTO = model.Mapper.Map<CommentDTO>(comment);
             return TypedResults.Ok(commentDTO);
         }
+        #endregion
 
-        static async Task<IResult> Update(int movieID, int id, CreateCommentDTO createComment,
-            ICommentRepository commentRepository, IOutputCacheStore cache,
-            IMovieRepository movieRepository, IMapper mapper, IUserServices userServices)
+        #region Update
+        static async Task<IResult> Update(CreateCommentDTO createComment, [AsParameters] UpdateCommentsRequestDTO model)
         {
-            if (!await movieRepository.Exists(movieID))
+            if (!await model.MovieRepository.Exists(model.MovieID))
             {
                 return TypedResults.NotFound();
             }
-            var commentFromDB = await commentRepository.GetByID(id);
+            var commentFromDB = await model.CommentRepository.GetByID(model.ID);
             if (commentFromDB is null)
             {
                 return TypedResults.NotFound();
             }
-            var user = await userServices.GetUser();
+            var user = await model.UserServices.GetUser();
             if (user is null)
             {
                 return TypedResults.NotFound();
@@ -75,26 +77,27 @@ namespace MinimalAPIMoviez.EndPoints
             }
             commentFromDB.Body = createComment.Body;
 
-            await commentRepository.Update(commentFromDB);
-            await cache.EvictByTagAsync("comment-get", default);
+            await model.CommentRepository.Update(commentFromDB);
+            await model.CacheStore.EvictByTagAsync("comment-get", default);
             return TypedResults.NoContent();
         }
+        #endregion
 
-        static async Task<IResult> Delete (int movieID, int id, ICommentRepository commentRepository,
-            IMovieRepository movieRepository, IOutputCacheStore cacheStore, IUserServices userServices)
+        #region Delete
+        static async Task<IResult> Delete([AsParameters] DeleteCommentsRequestDTO model)
         {
-            if (!await commentRepository.Exists(id))
+            if (!await model.CommentRepository.Exists(model.ID))
             {
                 return TypedResults.NotFound();
             }
             // get comment by id
-            var commentFromDB = await commentRepository.GetByID(id);
+            var commentFromDB = await model.CommentRepository.GetByID(model.ID);
             if (commentFromDB is null)
             {
                 return TypedResults.NotFound();
             }
             //logged in User
-            var user = await userServices.GetUser();
+            var user = await model.UserServices.GetUser();
             if (user is null)
             {
                 return TypedResults.NotFound();
@@ -106,35 +109,38 @@ namespace MinimalAPIMoviez.EndPoints
             }
 
 
-
-            await commentRepository.Delete(id);
-            await cacheStore.EvictByTagAsync("comment-get", default);
+            await model.CommentRepository.Delete(model.ID);
+            await model.CacheStore.EvictByTagAsync("comment-get", default);
             return TypedResults.NoContent();
 
         }
-        static async Task< Results<Created<CommentDTO>,NotFound,BadRequest<string>>> Create(int movieID, CreateCommentDTO createCommentDTO,
-                    IMapper mapper, IOutputCacheStore cache,IUserServices userServices ,
-                    ICommentRepository commentRepository, IMovieRepository movieRepository )
+
+        #endregion
+
+        #region Create
+        static async Task< Results<Created<CommentDTO>,NotFound,BadRequest<string>>> Create
+            (CreateCommentDTO createCommentDTO, [AsParameters] CreateCommentsRequestDTO model)
         {
             // Detect wether comment in the Movie exists
-            if (! await movieRepository.Exists(movieID))
+            if (! await model.MovieRepository.Exists(model.MovieID))
             {
                 return TypedResults.NotFound();
             }
-            var user = await userServices.GetUser();
+            var user = await model.UserServices.GetUser();
             if (user is null)
             {
                return TypedResults.BadRequest("user not found");
             }
 
-            var comment = mapper.Map<Comment>(createCommentDTO);
-            comment.MovieId = movieID;
+            var comment = model.Mapper.Map<Comment>(createCommentDTO);
+            comment.MovieId = model.MovieID;
             comment.UserId = user.Id;
-            var id = await commentRepository.Create(comment);
-            await cache.EvictByTagAsync("comment-get", default);
-            var finalMapComment = mapper.Map<CommentDTO>(comment);
+            var id = await model.CommentRepository.Create(comment);
+            await model.CacheStore.EvictByTagAsync("comment-get", default);
+            var finalMapComment = model.Mapper.Map<CommentDTO>(comment);
             return TypedResults.Created($"/comment/{id}", finalMapComment);
 
         }
+        #endregion
     }
 }

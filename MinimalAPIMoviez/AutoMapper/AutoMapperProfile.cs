@@ -22,7 +22,7 @@ namespace MinimalAPIMoviez.AutoMapper
                 .ForMember(m => m.actorMovies, entity => 
                             entity.MapFrom(p => p.ActorsMovies.Select(am => new ActorMovieDTO { Character = am.Character, Id = am.ActorId, Name = am.Actor.Name })))
                 .ForMember(m => m.genres, entity => entity
-                           .MapFrom(p => p.GenresMovies.Select(gm => new GenreDTO { Id = gm.GenreId, Name = gm.Genres.Name })));
+                           .MapFrom(p => p.GenresMovies.Select(gm => new GenreDTO { Id = gm.GenreId, Name = gm.Genres.Name! })));
             CreateMap<CreateMovieDTO, Movie>()
             .ForMember(m => m.CoverImage, option => option.Ignore());
 
