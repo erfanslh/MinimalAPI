@@ -3,6 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OutputCaching;
+using Microsoft.OpenApi.Any;
 using MinimalAPIMoviez.DTOs;
 using MinimalAPIMoviez.DTOs.ActorRequestDTO;
 using MinimalAPIMoviez.Entities;
@@ -10,7 +11,7 @@ using MinimalAPIMoviez.Filters;
 using MinimalAPIMoviez.Repositories;
 using MinimalAPIMoviez.Services;
 using System.Runtime.CompilerServices;
-
+using MinimalAPIMoviez.Utilities;
 namespace MinimalAPIMoviez.EndPoints
 {
 
@@ -21,7 +22,8 @@ namespace MinimalAPIMoviez.EndPoints
         public static RouteGroupBuilder MapActors(this RouteGroupBuilder routeGroup)
         {
             routeGroup.MapGet("/", GetAll)
-                .CacheOutput(c=> c.Expire(TimeSpan.FromMinutes(1)).Tag("actors-get"));
+                .CacheOutput(c => c.Expire(TimeSpan.FromMinutes(1)).Tag("actors-get")).AddPaginationParameters();
+
             routeGroup.MapGet("/{id:int}", GetById);
             routeGroup.MapGet("getByName/{name}", GetByName);
             routeGroup.MapPost("/", Create).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateActorDTO>>()

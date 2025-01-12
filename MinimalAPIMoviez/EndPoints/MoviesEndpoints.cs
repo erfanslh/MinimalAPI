@@ -8,6 +8,7 @@ using MinimalAPIMoviez.Entities;
 using MinimalAPIMoviez.Filters;
 using MinimalAPIMoviez.Repositories;
 using MinimalAPIMoviez.Services;
+using MinimalAPIMoviez.Utilities;
 
 namespace MinimalAPIMoviez.EndPoints
 {
@@ -25,7 +26,7 @@ namespace MinimalAPIMoviez.EndPoints
                 .RequireAuthorization("isadmin");
             routeGroup.MapDelete("/", Delete);
             routeGroup.MapGet("/", GetAllMovies)
-                                        .CacheOutput(c => c.Expire(TimeSpan.FromMinutes(1)).Tag("movie-get"));
+                                        .CacheOutput(c => c.Expire(TimeSpan.FromMinutes(1)).Tag("movie-get")).AddPaginationParameters();
             routeGroup.MapGet("/{id:int}", GetByID);
             return routeGroup;
         }
@@ -77,10 +78,9 @@ namespace MinimalAPIMoviez.EndPoints
         #endregion
 
         #region GetAllMovies
-        public static async Task<Ok<List<MovieDTO>>> GetAllMovies([AsParameters] GetAllMoviesRequestDTO model)
+        public static async Task<Ok<List<MovieDTO>>> GetAllMovies([AsParameters] GetAllMoviesRequestDTO model, PaginationDTO paginationDTO)
         {
-            var pagination = new PaginationDTO { Page= model.Page,RecordsPerPage = model.RecordsPerPage};
-            var getAll = await model.Repository.GetAll(pagination);
+            var getAll = await model.Repository.GetAll(paginationDTO);
             var mapping = model.Mapper.Map<List<MovieDTO>>(getAll);
             return TypedResults.Ok(mapping);
         }
