@@ -31,11 +31,12 @@ namespace MinimalAPIMoviez.EndPoints
             routeGroup.MapDelete("/{id:int}", Delete).RequireAuthorization("isadmin");
             return routeGroup;
         }
+
         #region Get all Actors
 
-        static async Task<Ok<List<ActorDTO>>> GetAll([AsParameters] GetAllActorRequestDTO model)
+        static async Task<Ok<List<ActorDTO>>> GetAll([AsParameters] GetAllActorRequestDTO model, PaginationDTO pagination)
         {
-            var pagination = new PaginationDTO { Page = model.Page,RecordsPerPage = model.RecordsPerPage };
+            //var pagination = new PaginationDTO { Page = model.Page,RecordsPerPage = model.RecordsPerPage };
             var allActors = await model.Repository.GetAll(pagination);
             var map = model.Mapper.Map<List<ActorDTO>>(allActors);
             return TypedResults.Ok(map);

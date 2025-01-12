@@ -6,18 +6,7 @@
     "HttpMethod": "GET",
     "IsController": false,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "Page",
-        "Type": "System.Int32",
-        "IsRequired": true
-      },
-      {
-        "Name": "RecordsPerPage",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": [
       {
         "Type": "System.Collections.Generic.List\u00601[[MinimalAPIMoviez.DTOs.ActorDTO, MinimalAPIMoviez, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",

@@ -7,8 +7,8 @@ namespace MinimalAPIMoviez.DTOs.ActorRequestDTO
     {
         public IActorRepository Repository { get; set; } = null!;
         public IMapper Mapper { get; set; } = null!;
-        public int Page { get; set; } = 1;
-        public int RecordsPerPage { get; set; } = 10;
+        //public int Page { get; set; } = 1;
+        //public int RecordsPerPage { get; set; } = 10;
 
 
     }
