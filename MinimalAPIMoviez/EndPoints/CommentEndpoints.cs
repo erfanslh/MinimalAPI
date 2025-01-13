@@ -15,12 +15,49 @@ namespace MinimalAPIMoviez.EndPoints
         public static RouteGroupBuilder MapComment(this RouteGroupBuilder routeGroup)
         {
             routeGroup.MapPost("/", Create).AddEndpointFilter<ValidationFilter<CreateCommentDTO>>()
-                .RequireAuthorization();
+                .RequireAuthorization().WithOpenApi(options =>
+                {
+                    options.Summary = "Add a Comment";
+                    options.Description = "Write what you want to say about the Movie, You need to be authorized as USER first.";
+                    return options;
+
+                }); ;
             routeGroup.MapGet("/", GetAll)
-                    .CacheOutput(c=> c.Expire(TimeSpan.FromSeconds(60)).Tag("comment-get"));
-            routeGroup.MapGet("/{id:int}", GetById);
-            routeGroup.MapPut("/{id:int}", Update).AddEndpointFilter<ValidationFilter<CreateCommentDTO>>();
-            routeGroup.MapDelete("/{id:int}", Delete);
+                    .CacheOutput(c=> c.Expire(TimeSpan.FromSeconds(60)).Tag("comment-get")).WithOpenApi(options =>
+                    {
+                        options.Summary = "Get list of all Comments belongs to a Movie";
+                        options.Description = "Enter the ID of the Movie you want to visit it's comments";
+                        options.Parameters[0].Description = "ID of the Movie";
+                        return options;
+
+                    }); ;
+            routeGroup.MapGet("/{id:int}", GetById).WithOpenApi(options =>
+            {
+                options.Summary = "Get a Comment by ID";
+                options.Description = "Enter the ID of the Comment you want to see";
+                options.Parameters[0].Description = "ID of the Movie";
+                options.Parameters[1].Description = "ID of the Comment you want";
+                return options;
+
+            }); ;
+            routeGroup.MapPut("/{id:int}", Update).AddEndpointFilter<ValidationFilter<CreateCommentDTO>>().WithOpenApi(options =>
+            {
+                options.Summary = "Update a Comment";
+                options.Description = "Enter the ID of the Comment you want to Update";
+                options.Parameters[0].Description = "ID of the Movie";
+                options.Parameters[1].Description = "ID of the Comment you want to Update";
+                return options;
+
+            }); 
+            routeGroup.MapDelete("/{id:int}", Delete).WithOpenApi(options =>
+            {
+                options.Summary = "Delete a Comment";
+                options.Description = "Enter the ID of the Comment you want to Delete";
+                options.Parameters[0].Description = "ID of the Movie";
+                options.Parameters[1].Description = "ID of the Comment you want to Delete";
+                return options;
+
+            });
             return routeGroup;
         }
 
