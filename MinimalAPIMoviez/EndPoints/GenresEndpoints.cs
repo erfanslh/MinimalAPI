@@ -20,17 +20,48 @@ namespace MinimalAPIMoviez.EndPoints
             #region CRUD
             //Create
             routeGroupBuilder.MapPost("/", Insert).AddEndpointFilter<ValidationFilter<CreateGenreDTO>>()
-                .RequireAuthorization("isadmin");
+                .RequireAuthorization("isadmin").WithOpenApi(options =>
+                {
+                    options.Summary = "Create a new Genre";
+                    options.Description = "for creating new Genre,first you have to authorize yourself as an ADMIN then you can add your new Genre's name to the project";
+                    options.RequestBody.Description = "the genre to create";
+                    return options;
+                }); ;
             //Get All
-            routeGroupBuilder.MapGet("/", GetAll).CacheOutput(x => x.Expire(TimeSpan.FromSeconds(15)).Tag("cache-genre"));
+            routeGroupBuilder.MapGet("/", GetAll).CacheOutput(x => x.Expire(TimeSpan.FromSeconds(15)).Tag("cache-genre"))
+                .WithOpenApi(options =>
+                {
+                    options.Summary = "Get all Genres";
+                    options.Description = "Click on execute to receive all existed Genres in Datasase";
+                    return options;
+                }); ;
             //Get an Entity
-            routeGroupBuilder.MapGet("/{id:int}", GetById).RequireAuthorization();
+            routeGroupBuilder.MapGet("/{id:int}", GetById).RequireAuthorization().WithOpenApi(options =>
+            {
+                options.Summary = "Get a Genre";
+                options.Description = "To get the specific Genre,first you have to authorize yourself as an User then you have to give the ID of the Genre";
+                options.Parameters[0].Description = "the id of the genre to receive";
+                return options;
+            }); ;
             //Edit
             routeGroupBuilder.MapPut("/{id:int}", Update).AddEndpointFilter<ValidationFilter<CreateGenreDTO>>()
-                .RequireAuthorization("isadmin");
+                .RequireAuthorization("isadmin").WithOpenApi(options =>
+                {
+                    options.Summary = "Update Genre";
+                    options.Description = "To update the Genre,first you have to authorize yourself as an ADMIN then you have to give the ID of the Genre";
+                    options.Parameters[0].Description = "the id of the genre to update";
+                    options.RequestBody.Description = "the genre to update";
+                    return options;
+                });
             //Delete
             //***   "/genre (in MapGroup added)  /{id:int}"
-            routeGroupBuilder.MapDelete("/{id:int}", Delete).RequireAuthorization("isadmin");
+            routeGroupBuilder.MapDelete("/{id:int}", Delete).RequireAuthorization("isadmin").WithOpenApi(options =>
+            {
+                options.Summary = "Delete Genre";
+                options.Description = "To delete the Genre,first you have to authorize yourself as an ADMIN then you have to give the ID of the Genre";
+                options.Parameters[0].Description = "the id of the genre to Delete";
+                return options;
+            }); ;
             #endregion
 
             return routeGroupBuilder;
