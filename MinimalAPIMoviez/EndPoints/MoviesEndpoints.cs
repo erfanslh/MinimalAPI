@@ -18,16 +18,67 @@ namespace MinimalAPIMoviez.EndPoints
         public static RouteGroupBuilder MapMovies(this RouteGroupBuilder routeGroup)
         {
             routeGroup.MapPost("/", Create).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>()
-                .RequireAuthorization("isadmin");
+                .RequireAuthorization("isadmin").WithOpenApi(options =>
+                {
+                    options.Summary = "Create a Movie";
+                    options.Description = "Here you can add a Movie, You need to be Authorized as an ADMIN first.";
+                    return options;
+
+                }); 
             routeGroup.MapPost("/{id:int}/assignGenre",AssignGenres).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>()
-                .RequireAuthorization("isadmin");
-            routeGroup.MapPost("/{id:int}/assignActor", AssignActor).RequireAuthorization("isadmin");
+                .RequireAuthorization("isadmin").WithOpenApi(options =>
+                {
+                    options.Summary = "Assign a Genre to a Movie";
+                    options.Description = "Enter the ID of the Movie you want to be Assigned to the Genre";
+                    options.Parameters[0].Description = "ID of the Movie you want to be assigned";
+                    return options;
+
+                }); 
+            routeGroup.MapPost("/{id:int}/assignActor", AssignActor).RequireAuthorization("isadmin").WithOpenApi(options =>
+            {
+                options.Summary = "Assign an Actor to a Movie";
+                options.Description = "You need the Movie-ID and Actor-ID, You must be Authorized as an ADMIN first";
+                options.Parameters[0].Description = "ID of the Movie you want to be assigned to the Actor";
+                return options;
+
+            }); 
+
             routeGroup.MapPut("/", Update).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>()
-                .RequireAuthorization("isadmin");
-            routeGroup.MapDelete("/", Delete);
-            routeGroup.MapGet("/", GetAllMovies)
-                                        .CacheOutput(c => c.Expire(TimeSpan.FromMinutes(1)).Tag("movie-get")).AddPaginationParameters();
-            routeGroup.MapGet("/{id:int}", GetByID);
+                .RequireAuthorization("isadmin").WithOpenApi(options =>
+                {
+                    options.Summary = "Update a Movie";
+                    options.Description = "Enter the ID of the Movie you want to Update, You need to be Authorized as an ADMIN";
+                    options.Parameters[0].Description = "ID of the Movie you want to Update";
+                    return options;
+
+                }); 
+
+            routeGroup.MapDelete("/", Delete).WithOpenApi(options => 
+                    {
+                        options.Summary = "Delete a Movie";
+                        options.Description = "Enter the ID of the Movie you want to Delete";
+                        options.Parameters[0].Description = "ID of the Movie you want to Delete";
+                        return options;
+
+                    });
+
+            routeGroup.MapGet("/", GetAllMovies).CacheOutput(c => c.Expire(TimeSpan.FromMinutes(1))
+            .Tag("movie-get")).AddPaginationParameters().WithOpenApi(options => {
+                options.Summary = "Get all Movies";
+                options.Description = "Click on Execute to receive all stored Movies in the Database";
+                options.Parameters[0].Description = "Page Number";
+                options.Parameters[1].Description = "Count of Movies per page";
+                return options;
+            });
+
+            routeGroup.MapGet("/{id:int}", GetByID).WithOpenApi(options =>
+            {
+                options.Summary = "Get a Movie";
+                options.Description = "Enter the ID of the Movie you want to view it's Details";
+                options.Parameters[0].Description = "ID of the Movie";
+                return options;
+
+            });
             return routeGroup;
         }
         #region Delete
