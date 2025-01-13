@@ -50,7 +50,20 @@ internal class Program
         });
         builder.Services.AddOutputCache();
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+            {
+                Title = "Movie API",
+                Description = "The Movie API Application is a lightweight and efficient Minimal API built with ASP.NET Core, designed to manage and provide movie-related data. This API allows users to perform CRUD (Create, Read, Update, Delete) operations on movie records. It is optimized for performance, making it ideal for microservices or applications that require fast, scalable movie data services.",
+                Contact = new Microsoft.OpenApi.Models.OpenApiContact
+                {
+                    Email = "Erfan.Slh@yahoo.com",
+                    Name = "Erfan Mollasalehi",
+                    Url = new Uri("https://www.linkedin.com/in/erfan-mollasalehi/")
+                }
+            });
+        });
         //Scope-Service for Repositories and Interfaces
         builder.Services.AddScoped<IGenresRepository, GenresRepository>();
         builder.Services.AddScoped<IActorRepository, ActorRepository>();
