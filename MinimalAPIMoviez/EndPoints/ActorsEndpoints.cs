@@ -22,15 +22,53 @@ namespace MinimalAPIMoviez.EndPoints
         public static RouteGroupBuilder MapActors(this RouteGroupBuilder routeGroup)
         {
             routeGroup.MapGet("/", GetAll)
-                .CacheOutput(c => c.Expire(TimeSpan.FromMinutes(1)).Tag("actors-get")).AddPaginationParameters();
+                .CacheOutput(c => c.Expire(TimeSpan.FromMinutes(1)).Tag("actors-get")).AddPaginationParameters().WithOpenApi(options=>
+                {
+                    options.Summary = "Get all Actors";
+                    options.Description = "Click on Execute to receive all stored actors in the Database";
+                    options.Parameters[0].Description = "Page Number";
+                    options.Parameters[1].Description = "Count of Actors per page";
+                    return options;
+                });
 
-            routeGroup.MapGet("/{id:int}", GetById);
-            routeGroup.MapGet("getByName/{name}", GetByName);
+            routeGroup.MapGet("/{id:int}", GetById).WithOpenApi(options =>
+            {
+                options.Summary = "Get an Actor by it's ID";
+                options.Description = "by giving actor's ID, you'll receive all information about the actor";
+                options.Parameters[0].Description = "ID of the Actor";
+                return options;
+            });
+            routeGroup.MapGet("getByName/{name}", GetByName).WithOpenApi(options =>
+            {
+                options.Summary = "Get an Actor by it's Name";
+                options.Description = "You can retrieves all information from an actor, by giving it's name";
+                options.Parameters[0].Description = "Name of the Actor";
+                return options;
+            }); 
             routeGroup.MapPost("/", Create).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateActorDTO>>()
-                .RequireAuthorization("isadmin");
+                .RequireAuthorization("isadmin").WithOpenApi(options =>
+                {
+                    options.Summary = "Create an Actor";
+                    options.Description = "to create an Actor, first you need to be authorization as an ADMIN, then you can add the Actor";
+                    options.RequestBody.Description = "Add Information of the Actor you want to create";
+                    return options;
+            }); 
             routeGroup.MapPut("/{id:int}", Update).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateActorDTO>>()
-                .RequireAuthorization("isadmin");
-            routeGroup.MapDelete("/{id:int}", Delete).RequireAuthorization("isadmin");
+                .RequireAuthorization("isadmin").WithOpenApi(options =>
+                {
+                    options.Summary = "Update an Actor";
+                    options.Description = "to update the Actor, first you need to be authorization as an ADMIN, then you can update the Actor using it's ID";
+                    options.Parameters[0].Description = "ID of the Actor you want to EDIT";
+                    options.RequestBody.Description = "Edit the Information of the Actor you want to Update";
+                    return options;
+                });
+            routeGroup.MapDelete("/{id:int}", Delete).RequireAuthorization("isadmin").WithOpenApi(options =>
+            {
+                options.Summary = "Delete an Actor";
+                options.Description = "to delete an Actor, first you need to be authorization as an ADMIN, then you can delete the Actor";
+                options.Parameters[0].Description = "ID of the Actor you want to DELETE";
+                return options;
+            }); ; ;
             return routeGroup;
         }
 
