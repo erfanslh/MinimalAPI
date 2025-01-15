@@ -623,6 +623,24 @@
     ]
   },
   {
+    "ContainingType": "MinimalAPIMoviez.EndPoints.MoviesEndpoints",
+    "Method": "FilterMovies",
+    "RelativePath": "movie/filter",
+    "HttpMethod": "GET",
+    "IsController": false,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[MinimalAPIMoviez.DTOs.MovieDTO, MinimalAPIMoviez, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      }
+    ]
+  },
+  {
     "ContainingType": "MinimalAPIMoviez.EndPoints.UserEndpoints",
     "Method": "Login",
     "RelativePath": "users/Login",

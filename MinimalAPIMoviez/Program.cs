@@ -65,6 +65,7 @@ internal class Program
                     Url = new Uri("https://www.linkedin.com/in/erfan-mollasalehi/")
                 }
             });
+            #region Authorization for Swagger
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Name = "Authorization",
@@ -74,6 +75,7 @@ internal class Program
                 In = ParameterLocation.Header,
             });
             options.OperationFilter<AuthorizationFilter>();
+            #endregion
         });
         //Scope-Service for Repositories and Interfaces
         builder.Services.AddScoped<IGenresRepository, GenresRepository>();

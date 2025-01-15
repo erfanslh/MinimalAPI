@@ -81,5 +81,41 @@ namespace MinimalAPIMoviez.Repositories
             movie.ActorsMovies = mapper.Map(actors, movie.ActorsMovies);
             await context.SaveChangesAsync();
         }
+
+        public async Task<List<Movie>> Filter(MoviesFilterDTO moviesFilterDTO)
+        {
+            var moviesQueryable = context.movies.AsQueryable();
+
+            #region filter for Parameters (Title, InCinema, FutureReleases, GenreId)
+            if (!string.IsNullOrEmpty(moviesFilterDTO.Title))
+            {
+                moviesQueryable = moviesQueryable.Where(x=> x.Title.Contains(moviesFilterDTO.Title));
+            }
+
+            if (moviesFilterDTO.InCinema)
+            {
+                moviesQueryable = moviesQueryable.Where(x => x.InCinema);
+            }
+            if (moviesFilterDTO.FutureReleases)
+            {
+                var today = DateTime.Today;
+                moviesQueryable = moviesQueryable.Where(x => x.ReleaseDate > today);
+            }
+
+            if(moviesFilterDTO.GenreId != 0)
+            {
+                moviesQueryable = moviesQueryable.
+                        Where(x => x.GenresMovies.
+                            Select(y => y.GenreId).
+                            Contains(moviesFilterDTO.GenreId));
+            }
+            #endregion
+
+            await httpContextAccessor.HttpContext!.InsertPaginationInResponseHeader(moviesQueryable);
+
+            var movies = await moviesQueryable.Pagination(moviesFilterDTO.PaginationDTO).ToListAsync();
+
+            return movies;
+        }
     }
 }

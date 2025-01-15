@@ -17,6 +17,7 @@ namespace MinimalAPIMoviez.EndPoints
         private readonly static string container = "movies";
         public static RouteGroupBuilder MapMovies(this RouteGroupBuilder routeGroup)
         {
+            #region MapPost
             routeGroup.MapPost("/", Create).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>()
                 .RequireAuthorization("isadmin").WithOpenApi(options =>
                 {
@@ -41,8 +42,10 @@ namespace MinimalAPIMoviez.EndPoints
                 options.Parameters[0].Description = "ID of the Movie you want to be assigned to the Actor";
                 return options;
 
-            }); 
+            });
+            #endregion
 
+            #region MapPut
             routeGroup.MapPut("/", Update).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>()
                 .RequireAuthorization("isadmin").WithOpenApi(options =>
                 {
@@ -51,8 +54,10 @@ namespace MinimalAPIMoviez.EndPoints
                     options.Parameters[0].Description = "ID of the Movie you want to Update";
                     return options;
 
-                }); 
+                });
+            #endregion
 
+            #region MapDelete
             routeGroup.MapDelete("/", Delete).WithOpenApi(options => 
                     {
                         options.Summary = "Delete a Movie";
@@ -61,7 +66,9 @@ namespace MinimalAPIMoviez.EndPoints
                         return options;
 
                     });
+            #endregion
 
+            #region MapGet
             routeGroup.MapGet("/", GetAllMovies).CacheOutput(c => c.Expire(TimeSpan.FromMinutes(1))
             .Tag("movie-get")).AddPaginationParameters().WithOpenApi(options => {
                 options.Summary = "Get all Movies";
@@ -79,6 +86,9 @@ namespace MinimalAPIMoviez.EndPoints
                 return options;
 
             });
+            routeGroup.MapGet("/filter", FilterMovies).AddMoviesFilterParameter();
+            #endregion
+
             return routeGroup;
         }
         #region Delete
@@ -206,6 +216,14 @@ namespace MinimalAPIMoviez.EndPoints
         }
         #endregion
 
+        #region FilterMovies
 
+        public static async Task<Ok<List<MovieDTO>>> FilterMovies(MoviesFilterDTO moviesFilter, IMovieRepository movieRepository,IMapper mapper)
+        {
+            var movie = await movieRepository.Filter(moviesFilter);
+            var mappingMovie = mapper.Map<List<MovieDTO>>(movie);
+            return TypedResults.Ok(mappingMovie);
+        }
+        #endregion
     }
 }
