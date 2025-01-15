@@ -15,6 +15,8 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using MinimalAPIMoviez.Utilities;
+using Microsoft.OpenApi.Models;
+using MinimalAPIMoviez.Swagger;
 
 internal class Program
 {
@@ -52,17 +54,26 @@ internal class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+            options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "Movie API",
                 Description = "The Movie API Application is a lightweight and efficient Minimal API built with ASP.NET Core, designed to manage and provide movie-related data. This API allows users to perform CRUD (Create, Read, Update, Delete) operations on movie records. It is optimized for performance, making it ideal for microservices or applications that require fast, scalable movie data services.",
-                Contact = new Microsoft.OpenApi.Models.OpenApiContact
+                Contact = new OpenApiContact
                 {
                     Email = "Erfan.Slh@yahoo.com",
                     Name = "Erfan Mollasalehi",
                     Url = new Uri("https://www.linkedin.com/in/erfan-mollasalehi/")
                 }
             });
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            {
+                Name = "Authorization",
+                Type = SecuritySchemeType.ApiKey,
+                Scheme = "Bearer",
+                BearerFormat = "JWT",
+                In = ParameterLocation.Header,
+            });
+            options.OperationFilter<AuthorizationFilter>();
         });
         //Scope-Service for Repositories and Interfaces
         builder.Services.AddScoped<IGenresRepository, GenresRepository>();
