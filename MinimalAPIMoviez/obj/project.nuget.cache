@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "xQWpq91o9Ug=",
+  "dgSpecHash": "EgzLMp8fKyg=",
   "success": true,
   "projectFilePath": "C:\\Users\\scorp\\source\\repos\\MiniAPI\\MinimalAPIMoviez\\MinimalAPIMoviez.csproj",
   "expectedPackageFiles": [
@@ -82,6 +82,7 @@
     "C:\\Users\\scorp\\.nuget\\packages\\system.identitymodel.tokens.jwt\\7.1.2\\system.identitymodel.tokens.jwt.7.1.2.nupkg.sha512",
     "C:\\Users\\scorp\\.nuget\\packages\\system.io.hashing\\6.0.0\\system.io.hashing.6.0.0.nupkg.sha512",
     "C:\\Users\\scorp\\.nuget\\packages\\system.io.pipelines\\9.0.0\\system.io.pipelines.9.0.0.nupkg.sha512",
+    "C:\\Users\\scorp\\.nuget\\packages\\system.linq.dynamic.core\\1.5.1\\system.linq.dynamic.core.1.5.1.nupkg.sha512",
     "C:\\Users\\scorp\\.nuget\\packages\\system.memory\\4.5.4\\system.memory.4.5.4.nupkg.sha512",
     "C:\\Users\\scorp\\.nuget\\packages\\system.memory.data\\6.0.0\\system.memory.data.6.0.0.nupkg.sha512",
     "C:\\Users\\scorp\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",

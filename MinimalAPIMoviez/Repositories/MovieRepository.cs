@@ -3,12 +3,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using MinimalAPIMoviez.DTOs;
 using MinimalAPIMoviez.Entities;
+using System.Linq.Dynamic.Core;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace MinimalAPIMoviez.Repositories
 {
     public class MovieRepository(IHttpContextAccessor httpContextAccessor, 
-        ApplicationDbContext context, IMapper mapper) : IMovieRepository
+        ApplicationDbContext context, IMapper mapper, ILogger<MovieRepository> logger) : IMovieRepository
     {
         public async Task<List<Movie>> GetAll(PaginationDTO pagination)
         {
@@ -108,6 +109,19 @@ namespace MinimalAPIMoviez.Repositories
                         Where(x => x.GenresMovies.
                             Select(y => y.GenreId).
                             Contains(moviesFilterDTO.GenreId));
+            }
+            if (!string.IsNullOrEmpty(moviesFilterDTO.OrderByField))
+            {
+                var orderKind = moviesFilterDTO.OrderByAscending ? "ascending" : "descending";
+                try
+                {
+                    moviesQueryable = moviesQueryable.OrderBy($"{moviesFilterDTO.OrderByField} {orderKind}");
+                }
+                catch (Exception ex)
+                {
+
+                    logger.LogError(ex.Message);
+                }
             }
             #endregion
 

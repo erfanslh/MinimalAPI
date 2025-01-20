@@ -334,3 +334,4 @@ C:\Users\scorp\source\repos\MiniAPI\MinimalAPIMoviez\bin\Debug\net8.0\Microsoft.
 C:\Users\scorp\source\repos\MiniAPI\MinimalAPIMoviez\bin\Debug\net8.0\Microsoft.Extensions.Identity.Core.dll
 C:\Users\scorp\source\repos\MiniAPI\MinimalAPIMoviez\bin\Debug\net8.0\Microsoft.Extensions.Identity.Stores.dll
 C:\Users\scorp\source\repos\MiniAPI\MinimalAPIMoviez\bin\Debug\net8.0\Microsoft.AspNetCore.OpenApi.dll
+C:\Users\scorp\source\repos\MiniAPI\MinimalAPIMoviez\bin\Debug\net8.0\System.Linq.Dynamic.Core.dll
