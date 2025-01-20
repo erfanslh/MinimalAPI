@@ -58,7 +58,10 @@ namespace MinimalAPIMoviez.Utilities
                     In = ParameterLocation.Query,
                     Schema = new OpenApiSchema
                     {
-                        Type = "string"
+                        Type = "string",
+                        Enum = new List<IOpenApiAny> { new OpenApiString("Title"),
+                                                       new OpenApiString("ReleaseDate")
+                                                     }
                     }
                 });
                 options.Parameters.Add(new OpenApiParameter
