@@ -1,1 +1,6 @@
+# Ignore Visual Studio cache files
 .vs/
+
+# Ignore sensitive app settings
+appsettings.json
+appsettings.Development.json
