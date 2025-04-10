@@ -4,3 +4,4 @@
 # Ignore sensitive app settings
 appsettings.json
 appsettings.Development.json
+/MinimalAPIMoviez/appsettings.Development.json
