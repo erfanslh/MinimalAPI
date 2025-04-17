@@ -26,7 +26,7 @@ namespace MinimalAPIMoviez.EndPoints
                     return options;
 
                 }); 
-            routeGroup.MapPost("/{id:int}/assignGenre",AssignGenres).DisableAntiforgery().AddEndpointFilter<ValidationFilter<CreateMovieDTO>>()
+            routeGroup.MapPost("/{id:int}/assignGenre",AssignGenres).DisableAntiforgery()
                 .RequireAuthorization("isadmin").WithOpenApi(options =>
                 {
                     options.Summary = "Assign a Genre to a Movie";
