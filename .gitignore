@@ -1,7 +1,14 @@
-# Ignore Visual Studio cache files
+# Visual Studio cache
 .vs/
+*.user
+*.suo
 
-# Ignore sensitive app settings
-appsettings.json
-appsettings.Development.json
-/MinimalAPIMoviez/appsettings.Development.json
+# Build outputs
+bin/
+obj/
+
+# Sensitive configuration files 
+**/appsettings*.json
+**/appsettings.Development*.json
+# Others
+*.log
