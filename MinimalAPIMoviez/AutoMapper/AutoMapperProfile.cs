@@ -31,6 +31,7 @@ namespace MinimalAPIMoviez.AutoMapper
 
             CreateMap<ActorMovie, AssignActorMovieDTO>();
             CreateMap<AssignActorMovieDTO, ActorMovie>();
+
         }
     }
 }

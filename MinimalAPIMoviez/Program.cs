@@ -31,7 +31,7 @@ internal class Program
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-        builder.Services.AddGraphQLServer().AddQueryType<Query>().AddAuthorization().AddProjections().AddFiltering().AddSorting();
+        builder.Services.AddGraphQLServer().AddQueryType<Query>().AddMutationType<Mutation>().AddAuthorization().AddProjections().AddFiltering().AddSorting();
 
         #region Services for Authentication Users
         builder.Services.AddIdentityCore<IdentityUser>()
