@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System.ComponentModel;
 using System;
+using Path = System.IO.Path;
 
 namespace MinimalAPIMoviez.Services
 {

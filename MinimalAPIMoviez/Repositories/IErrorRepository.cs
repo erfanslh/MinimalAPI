@@ -1,4 +1,5 @@
 ﻿using MinimalAPIMoviez.Entities;
+using Error = MinimalAPIMoviez.Entities.Error;
 
 namespace MinimalAPIMoviez.Repositories
 {

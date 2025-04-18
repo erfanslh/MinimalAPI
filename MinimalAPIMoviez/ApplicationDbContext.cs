@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using MinimalAPIMoviez;
 using MinimalAPIMoviez.Entities;
 using System.Security.Claims;
+using Error = MinimalAPIMoviez.Entities.Error;
 
 namespace MinimalAPIMoviez
 {

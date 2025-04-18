@@ -17,6 +17,8 @@ using Microsoft.IdentityModel.Tokens;
 using MinimalAPIMoviez.Utilities;
 using Microsoft.OpenApi.Models;
 using MinimalAPIMoviez.Swagger;
+using Error = MinimalAPIMoviez.Entities.Error;
+using MinimalAPIMoviez.GraphQL;
 
 internal class Program
 {
@@ -28,6 +30,8 @@ internal class Program
 
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+        builder.Services.AddGraphQLServer().AddQueryType<Query>().AddAuthorization().AddProjections().AddFiltering().AddSorting();
 
         #region Services for Authentication Users
         builder.Services.AddIdentityCore<IdentityUser>()
@@ -154,6 +158,9 @@ internal class Program
         app.UseCors();
         app.UseOutputCache();
         app.UseAuthorization();
+
+        app.MapGraphQL();
+
         app.MapGet("/error", () =>
         {
             throw new InvalidOperationException("Error occurs on /error MapGet");
