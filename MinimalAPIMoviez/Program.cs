@@ -22,50 +22,75 @@ using MinimalAPIMoviez.GraphQL;
 
 internal class Program
 {
-    private static void Main(string[] args)
+    private static async Task Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        //Service Zone - Start
+        var defaultConnection = builder.Configuration.GetConnectionString("DefaultConnection");
+        var redisConnection = builder.Configuration.GetConnectionString("Redis");
+        var allowedOriginsValue = builder.Configuration["AllowedOrigin"];
+        var allowedOrigins = string.IsNullOrWhiteSpace(allowedOriginsValue)
+            ? Array.Empty<string>()
+            : allowedOriginsValue
+                .Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
+        // Service Zone - Start
         builder.Services.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(defaultConnection, sqlOptions =>
+            {
+                sqlOptions.EnableRetryOnFailure(5, TimeSpan.FromSeconds(10), null);
+            }));
 
-        builder.Services.AddGraphQLServer().AddQueryType<Query>().AddMutationType<Mutation>().AddAuthorization().AddProjections().AddFiltering().AddSorting();
+        builder.Services.AddGraphQLServer()
+            .AddQueryType<Query>()
+            .AddMutationType<Mutation>()
+            .AddAuthorization()
+            .AddProjections()
+            .AddFiltering()
+            .AddSorting();
 
-        #region Services for Authentication Users
         builder.Services.AddIdentityCore<IdentityUser>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
         builder.Services.AddScoped<UserManager<IdentityUser>>();
         builder.Services.AddScoped<SignInManager<IdentityUser>>();
-        #endregion
 
         builder.Services.AddCors(options =>
         {
-            options.AddDefaultPolicy(config =>
+            options.AddDefaultPolicy(policy =>
             {
-                config.WithOrigins(builder.Configuration["AllowedOrigin"]!).AllowAnyMethod().AllowAnyHeader();
+                if (allowedOrigins.Length == 0 ||
+                    (allowedOrigins.Length == 1 && allowedOrigins[0] == "*"))
+                {
+                    policy.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+                }
+                else
+                {
+                    policy.WithOrigins(allowedOrigins).AllowAnyMethod().AllowAnyHeader();
+                }
             });
+        });
 
-            options.AddPolicy("free", configuration =>
-            {
-                configuration.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
-            });
-        });
-        //builder.Services.AddOutputCache();
-        builder.Services.AddStackExchangeRedisOutputCache(options =>
+        if (!string.IsNullOrWhiteSpace(redisConnection))
         {
-            options.Configuration = builder.Configuration.GetConnectionString("redis");
-        });
+            builder.Services.AddStackExchangeRedisOutputCache(options =>
+            {
+                options.Configuration = redisConnection;
+            });
+        }
+        else
+        {
+            builder.Services.AddOutputCache();
+        }
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
             options.SwaggerDoc("v1", new OpenApiInfo
             {
                 Title = "Movie API",
-                Description = "The Movie API Application is a lightweight and efficient Minimal API built with ASP.NET Core, designed to manage and provide movie-related data. This API allows users to perform CRUD (Create, Read, Update, Delete) operations on movie records. It is optimized for performance, making it ideal for microservices or applications that require fast, scalable movie data services.",
+                Description = "The Movie API Application is a lightweight and efficient Minimal API built with ASP.NET Core, designed to manage and provide movie-related data.",
                 Contact = new OpenApiContact
                 {
                     Email = "Erfan.Slh@yahoo.com",
@@ -73,7 +98,7 @@ internal class Program
                     Url = new Uri("https://www.linkedin.com/in/erfan-mollasalehi/")
                 }
             });
-            #region Authorization for Swagger
+
             options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
                 Name = "Authorization",
@@ -83,65 +108,67 @@ internal class Program
                 In = ParameterLocation.Header,
             });
             options.OperationFilter<AuthorizationFilter>();
-            #endregion
         });
-        //Scope-Service for Repositories and Interfaces
+
         builder.Services.AddScoped<IGenresRepository, GenresRepository>();
         builder.Services.AddScoped<IActorRepository, ActorRepository>();
         builder.Services.AddScoped<IMovieRepository, MovieRepository>();
         builder.Services.AddScoped<ICommentRepository, CommentRepository>();
         builder.Services.AddScoped<IErrorRepository, ErrorRepository>();
 
-        builder.Services.AddTransient<IFileStorage, AzureStorage>();
+        var storageProvider = builder.Configuration["Storage:Provider"] ?? "Local";
+        if (string.Equals(storageProvider, "Azure", StringComparison.OrdinalIgnoreCase))
+        {
+            builder.Services.AddTransient<IFileStorage, AzureStorage>();
+        }
+        else
+        {
+            builder.Services.AddTransient<IFileStorage, LocalFileStorage>();
+        }
+
         builder.Services.AddAutoMapper(typeof(Program));
-        //Add this service to use HttpContextAccessor
         builder.Services.AddHttpContextAccessor();
         builder.Services.AddTransient<IUserServices, UserServices>();
-
         builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-
         builder.Services.AddProblemDetails();
 
-        builder.Services.AddAuthentication().AddJwtBearer
-                (option =>
-                {
-                    option.MapInboundClaims = false;
+        builder.Services.AddAuthentication().AddJwtBearer(option =>
+        {
+            option.MapInboundClaims = false;
+            option.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = false,
+                ValidateAudience = false,
+                ValidateIssuerSigningKey = true,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero,
+                IssuerSigningKeys = KeysHandler.GetAllKeys(builder.Configuration)
+            };
+        });
 
-                    option.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateIssuer = false,
-                        ValidateAudience = false,
-                        ValidateIssuerSigningKey = true,
-
-                        ValidateLifetime = true,
-                        ClockSkew = TimeSpan.Zero,
-
-                        IssuerSigningKeys = KeysHandler.GetAllKeys(builder.Configuration)
-                    };
-                });
         builder.Services.AddAuthorization(option =>
         {
             option.AddPolicy("isadmin", policy => policy.RequireClaim("isadmin"));
         });
-        
 
-        //Service Zone - End
+        // Service Zone - End
 
         var app = builder.Build();
 
-        // Middleware zone - Begin
-
         app.UseSwagger();
         app.UseSwaggerUI();
-        // for Handling error
+        app.UseStaticFiles();
+
         app.UseExceptionHandler(exceptionHandlerApp => exceptionHandlerApp.Run(async context =>
         {
             var exceptionHandlerFeature = context.Features.Get<IExceptionHandlerFeature>();
             var exception = exceptionHandlerFeature?.Error!;
-            var error = new Error();
-            error.Date = DateTime.UtcNow;
-            error.ErrorMessage = exception.Message;
-            error.StackTrace = exception.StackTrace;
+            var error = new Error
+            {
+                Date = DateTime.UtcNow,
+                ErrorMessage = exception.Message,
+                StackTrace = exception.StackTrace
+            };
 
             var repository = context.RequestServices.GetRequiredService<IErrorRepository>();
             await repository.Create(error);
@@ -150,14 +177,17 @@ internal class Program
             {
                 type = "Error",
                 message = "an unexpected exception has occured",
-                statud = 500
+                status = 500
             }).ExecuteAsync(context);
-        })); 
-        app.UseStatusCodePages(); //return a Status code, when an unhandle Exeption occurs.
+        }));
 
+        app.UseStatusCodePages();
         app.UseCors();
         app.UseOutputCache();
+        app.UseAuthentication();
         app.UseAuthorization();
+
+        await ApplyMigrationsWithRetryAsync(app);
 
         app.MapGraphQL();
 
@@ -165,21 +195,38 @@ internal class Program
         {
             throw new InvalidOperationException("Error occurs on /error MapGet");
         });
-        //defining MapGroup
+
         app.MapGroup("/genre").MapGenres();
         app.MapGroup("/actor").MapActors();
         app.MapGroup("/movie").MapMovies();
         app.MapGroup("/users").MapUser();
-
-        // We get Comments on a Movie so first we need the ID of the Movie then get into comments
         app.MapGroup("/movie/{movieId:int}/comments").MapComment();
 
+        await app.RunAsync();
+    }
 
-        // Middleware zone - End
-        app.Run();
+    private static async Task ApplyMigrationsWithRetryAsync(WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var logger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("DatabaseMigration");
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
+        const int maxRetries = 15;
+        for (var attempt = 1; attempt <= maxRetries; attempt++)
+        {
+            try
+            {
+                await dbContext.Database.MigrateAsync();
+                logger.LogInformation("Database migrations applied successfully.");
+                return;
+            }
+            catch (Exception ex) when (attempt < maxRetries)
+            {
+                logger.LogWarning(ex, "Database not ready yet. Retry {Attempt}/{MaxRetries} in 5 seconds.", attempt, maxRetries);
+                await Task.Delay(TimeSpan.FromSeconds(5));
+            }
+        }
 
+        await dbContext.Database.MigrateAsync();
     }
 }
-
-

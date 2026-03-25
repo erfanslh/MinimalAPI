@@ -1,0 +1,61 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: minimalapimoviez-api:latest
+    container_name: minimalapimoviez-api
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      ConnectionStrings__DefaultConnection: Server=sqlserver;Database=${DB_NAME};User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True;Encrypt=False
+      ConnectionStrings__Redis: redis:6379
+      AllowedOrigin: ${ALLOWED_ORIGIN}
+      Storage__Provider: Local
+      Authentication__Schemes__Bearer__SigningKeys__0__Issuer: our-app
+      Authentication__Schemes__Bearer__SigningKeys__0__Value: ${JWT_SIGNING_KEY_BASE64}
+    ports:
+      - "${API_PORT}:8080"
+    depends_on:
+      - sqlserver
+      - redis
+    volumes:
+      - uploads:/app/wwwroot
+    networks:
+      - movie-net
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: minimalapimoviez-sqlserver
+    restart: unless-stopped
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: "Express"
+      SA_PASSWORD: ${SA_PASSWORD}
+    ports:
+      - "${SQL_PORT}:1433"
+    volumes:
+      - sql_data:/var/opt/mssql
+    networks:
+      - movie-net
+
+  redis:
+    image: redis:7-alpine
+    container_name: minimalapimoviez-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - movie-net
+
+networks:
+  movie-net:
+
+volumes:
+  sql_data:
+  redis_data:
+  uploads:
